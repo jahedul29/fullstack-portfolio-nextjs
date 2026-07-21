@@ -4,21 +4,41 @@ import Link from "next/link";
 import { useState } from "react";
 import { scroller } from "react-scroll";
 
-const UserNavbar = () => {
+export type UserNavbarSections = {
+  about?: boolean;
+  projects?: boolean;
+  experience?: boolean;
+  blogs?: boolean;
+  skills?: boolean;
+  contact?: boolean;
+};
+
+type UserNavbarProps = {
+  sections?: UserNavbarSections;
+};
+
+const UserNavbar = ({ sections }: UserNavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navbarItems = [
+  const navbarItems: {
+    id: string;
+    title: string;
+    sectionKey?: keyof UserNavbarSections;
+  }[] = [
     {
       id: "aboutMe",
       title: "About Me",
+      sectionKey: "about",
     },
     {
       id: "experiences",
       title: "Experiences",
+      sectionKey: "experience",
     },
     {
       id: "projects",
       title: "Projects",
+      sectionKey: "projects",
     },
     {
       id: "contributions",
@@ -27,12 +47,18 @@ const UserNavbar = () => {
     {
       id: "blogs",
       title: "Blogs",
+      sectionKey: "blogs",
     },
     {
       id: "skills",
       title: "Skills",
+      sectionKey: "skills",
     },
   ];
+
+  const visibleNavbarItems = navbarItems.filter(
+    (item) => !item.sectionKey || sections?.[item.sectionKey] !== false
+  );
 
   return (
     <div className="flex justify-between items-center md:items-start py-5 px-5 md:px-10 bg-primaryBg relative">
@@ -42,7 +68,7 @@ const UserNavbar = () => {
         </Link>
       </div>
       <div className="flex gap-x-6 text-primaryText items-center hidden md:flex">
-        {navbarItems?.map((item) => (
+        {visibleNavbarItems?.map((item) => (
           <a
             href={`/home/#${item?.id}`}
             onClick={(e) => {
@@ -86,7 +112,7 @@ const UserNavbar = () => {
             isMobileMenuOpen ? "max-h-screen" : "max-h-0"
           }`}
         >
-          {navbarItems?.map((item) => (
+          {visibleNavbarItems?.map((item) => (
             <a
               href={`/home/#${item?.id}`}
               className="border-b-2 border-transparent hover:border-ternaryText hover:text-ternaryText py-3 transition-all duration-300 w-full text-center"

@@ -47,15 +47,19 @@ const Home = async () => {
     }
   );
 
+  const show = (k: string) => ownerData?.sections?.[k] !== false;
+
   return (
     <div className="w-full">
       <Header ownerData={ownerData} skills={skills} />
-      <AboutMe ownerData={ownerData} id="aboutMe" />
-      <Projects projects={projects} id="projects" />
-      <Experience experiences={experiences} id="experiences" />
-      <Blogs blogs={blogs} id="blogs" />
-      <Skills skills={skills} id="skills" />
-      <GetInTouch ownerData={ownerData} id="contact" />
+      {show("about") && <AboutMe ownerData={ownerData} id="aboutMe" />}
+      {show("projects") && <Projects projects={projects} id="projects" />}
+      {show("experience") && (
+        <Experience experiences={experiences} id="experiences" />
+      )}
+      {show("blogs") && <Blogs blogs={blogs} id="blogs" />}
+      {show("skills") && <Skills skills={skills} id="skills" />}
+      {show("contact") && <GetInTouch ownerData={ownerData} id="contact" />}
     </div>
   );
 };

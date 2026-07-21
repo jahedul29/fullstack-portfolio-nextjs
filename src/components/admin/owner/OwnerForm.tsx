@@ -9,6 +9,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -23,10 +31,6 @@ import { IOwner } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
-// Fields mirror src/server/modules/owner/{owner.interface,owner.model}.ts.
-// `metaKeywords` is a string[] on the model; edited here as a single
-// comma-separated input and split/joined back into an array at the form
-// boundary (onSubmit / defaultValues).
 const ownerFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z
@@ -45,6 +49,14 @@ const ownerFormSchema = z.object({
   calanderlyUrl: z.string().optional(),
   address: z.string().min(1, "Address is required"),
   metaKeywords: z.string().optional(),
+  sections: z.object({
+    about: z.boolean().optional(),
+    projects: z.boolean().optional(),
+    experience: z.boolean().optional(),
+    blogs: z.boolean().optional(),
+    skills: z.boolean().optional(),
+    contact: z.boolean().optional(),
+  }),
 });
 
 type OwnerFormValues = z.infer<typeof ownerFormSchema>;
@@ -52,6 +64,18 @@ type OwnerFormValues = z.infer<typeof ownerFormSchema>;
 type OwnerFormProps = {
   owner: IOwner;
 };
+
+const SECTION_TOGGLES: {
+  key: keyof NonNullable<OwnerFormValues["sections"]>;
+  label: string;
+}[] = [
+  { key: "about", label: "About" },
+  { key: "projects", label: "Projects" },
+  { key: "experience", label: "Experience" },
+  { key: "blogs", label: "Blogs" },
+  { key: "skills", label: "Skills" },
+  { key: "contact", label: "Contact" },
+];
 
 export function OwnerForm({ owner }: OwnerFormProps) {
   const [updateOwner, { isLoading: isUpdating }] = useUpdateOwnerMutation();
@@ -73,6 +97,14 @@ export function OwnerForm({ owner }: OwnerFormProps) {
       calanderlyUrl: owner.calanderlyUrl ?? "",
       address: owner.address ?? "",
       metaKeywords: owner.metaKeywords?.join(", ") ?? "",
+      sections: {
+        about: owner.sections?.about ?? true,
+        projects: owner.sections?.projects ?? true,
+        experience: owner.sections?.experience ?? true,
+        blogs: owner.sections?.blogs ?? true,
+        skills: owner.sections?.skills ?? true,
+        contact: owner.sections?.contact ?? true,
+      },
     },
   });
 
@@ -316,6 +348,36 @@ export function OwnerForm({ owner }: OwnerFormProps) {
             </FormItem>
           )}
         />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Landing sections</CardTitle>
+            <CardDescription>
+              Toggle which sections appear on the public landing page. The
+              header is always shown.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {SECTION_TOGGLES.map(({ key, label }) => (
+              <FormField
+                key={key}
+                control={form.control}
+                name={`sections.${key}`}
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-border p-3">
+                    <FormLabel className="!mt-0">{label}</FormLabel>
+                    <FormControl>
+                      <Switch
+                        checked={field.value ?? true}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            ))}
+          </CardContent>
+        </Card>
 
         <Button type="submit" disabled={isUpdating}>
           {isUpdating ? "Saving…" : "Save changes"}

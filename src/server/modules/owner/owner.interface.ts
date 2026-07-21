@@ -1,5 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/owner/owner.interface.ts
 export type IOwner = {
   name: string;
   email: string;
@@ -16,4 +14,12 @@ export type IOwner = {
   summery?: string;
   aboutOwner: string;
   metaKeywords?: string[];
+  sections?: {
+    about?: boolean;
+    projects?: boolean;
+    experience?: boolean;
+    blogs?: boolean;
+    skills?: boolean;
+    contact?: boolean;
+  };
 };

@@ -100,6 +100,14 @@ export type IOwner = {
   stackOverflowUrl?: string;
   metaKeywords?: string[];
   id: string;
+  sections?: {
+    about?: boolean;
+    projects?: boolean;
+    experience?: boolean;
+    blogs?: boolean;
+    skills?: boolean;
+    contact?: boolean;
+  };
 };
 
 export type IContribution = {

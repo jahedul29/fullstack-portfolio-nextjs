@@ -1,8 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/owner/owner.model.ts
-//
-// Transform: default export -> named export with a mongoose.models recompile
-// guard (Next.js hot-reload / serverless module reuse safe).
 import mongoose, { Model, Schema } from "mongoose";
 import { IOwner } from "./owner.interface";
 
@@ -69,6 +64,14 @@ const ownerSchema = new Schema<IOwner>(
     },
     metaKeywords: {
       type: [String],
+    },
+    sections: {
+      about: { type: Boolean, default: true },
+      projects: { type: Boolean, default: true },
+      experience: { type: Boolean, default: true },
+      blogs: { type: Boolean, default: true },
+      skills: { type: Boolean, default: true },
+      contact: { type: Boolean, default: true },
     },
   },
   {

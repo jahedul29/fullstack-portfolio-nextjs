@@ -1,6 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/owner/owner.validate.ts
-// (renamed .validate.ts -> .validation.ts)
 import { z } from "zod";
 
 const create = z.object({
@@ -44,6 +41,16 @@ const create = z.object({
       required_error: "aboutOwner is required",
     }),
     metaKeywords: z.array(z.string()).optional(),
+    sections: z
+      .object({
+        about: z.boolean().optional(),
+        projects: z.boolean().optional(),
+        experience: z.boolean().optional(),
+        blogs: z.boolean().optional(),
+        skills: z.boolean().optional(),
+        contact: z.boolean().optional(),
+      })
+      .optional(),
   }),
 });
 
@@ -67,6 +74,16 @@ const update = z.object({
     summery: z.string().optional(),
     aboutOwner: z.string().optional(),
     metaKeywords: z.array(z.string()).optional(),
+    sections: z
+      .object({
+        about: z.boolean().optional(),
+        projects: z.boolean().optional(),
+        experience: z.boolean().optional(),
+        blogs: z.boolean().optional(),
+        skills: z.boolean().optional(),
+        contact: z.boolean().optional(),
+      })
+      .optional(),
   }),
 });
 

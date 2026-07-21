@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectDb } from "@/server/db";
 import { handler } from "@/server/lib/handler";
 import { sendResponse } from "@/server/lib/sendResponse";
@@ -6,6 +7,7 @@ import { authGuard } from "@/server/lib/authGuard";
 import { USER_ROLE } from "@/server/modules/user/user.constant";
 import { OwnerService } from "@/server/modules/owner/owner.service";
 import { OwnerValidationSchema } from "@/server/modules/owner/owner.validation";
+import dataFetchingTags from "@/constants/dataFetchingTags";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +20,7 @@ export const PATCH = handler(
     OwnerValidationSchema.update.parse({ body });
 
     const data = await OwnerService.update(body, ctx.params.id);
+    revalidateTag(dataFetchingTags.owners);
     return sendResponse({
       statusCode: 200,
       message: "Owner updated successfully",
