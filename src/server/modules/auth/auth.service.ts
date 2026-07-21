@@ -66,7 +66,7 @@ const refreshToken = async (
 
   const { id: userId } = verifiedData;
 
-  const isUserExist = await User.isUserExist(userId);
+  const isUserExist = await User.findById(userId);
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
@@ -94,7 +94,7 @@ const changePassword = async (
 ): Promise<void> => {
   const { oldPassword, newPassword } = payload;
 
-  const isUserExist = await User.findOne({ id: user?.id }).select("+password");
+  const isUserExist = await User.findById(user?.id).select("+password");
 
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
