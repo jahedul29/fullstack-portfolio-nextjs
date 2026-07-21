@@ -9,10 +9,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { ZodError } from "zod";
+import httpStatus from "http-status";
 import { ApiError } from "./ApiError";
 
 type IErrorMessage = {
-  path: string | number;
+  path: string;
   message: string;
 };
 
@@ -49,7 +50,7 @@ export const handler = (fn: RouteHandlerFn) => {
           path: issue.path.join("."),
           message: issue.message,
         }));
-        return errorResponse(400, "Validation Error", errorMessages);
+        return errorResponse(httpStatus.BAD_REQUEST, "Validation Error", errorMessages);
       }
 
       if (err instanceof ApiError) {
@@ -65,21 +66,21 @@ export const handler = (fn: RouteHandlerFn) => {
           path: el?.path ?? "",
           message: el?.message ?? "",
         }));
-        return errorResponse(400, err.message, errorMessages);
+        return errorResponse(httpStatus.BAD_REQUEST, err.message, errorMessages);
       }
 
       if (err instanceof mongoose.Error.CastError) {
-        return errorResponse(400, "Validation Error", [
+        return errorResponse(httpStatus.BAD_REQUEST, "Validation Error", [
           { path: err.path, message: err.message },
         ]);
       }
 
       if (hasDuplicateKeyCode(err)) {
         const message = err.message ?? "Duplicate key error";
-        return errorResponse(409, message, [{ path: "", message }]);
+        return errorResponse(httpStatus.CONFLICT, message, [{ path: "", message }]);
       }
 
-      return errorResponse(500, "something went wrong", [
+      return errorResponse(httpStatus.INTERNAL_SERVER_ERROR, "something went wrong", [
         { path: "", message: "something went wrong" },
       ]);
     }

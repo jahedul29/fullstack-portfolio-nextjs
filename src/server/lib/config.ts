@@ -41,10 +41,18 @@ export const config: AppConfig = {
   },
   get jwt() {
     return {
-      secret: requireEnv("JWT_SECRET"),
-      expiresIn: requireEnv("JWT_EXPIRES_IN"),
-      refreshSecret: requireEnv("JWT_REFRESH_SECRET"),
-      refreshExpiresIn: requireEnv("JWT_REFRESH_EXPIRES_IN"),
+      get secret() {
+        return requireEnv("JWT_SECRET");
+      },
+      get expiresIn() {
+        return requireEnv("JWT_EXPIRES_IN");
+      },
+      get refreshSecret() {
+        return requireEnv("JWT_REFRESH_SECRET");
+      },
+      get refreshExpiresIn() {
+        return requireEnv("JWT_REFRESH_EXPIRES_IN");
+      },
     };
   },
 };

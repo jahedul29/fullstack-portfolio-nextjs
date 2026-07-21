@@ -5,7 +5,7 @@
 // the `Authorization` header. Runs only inside Node.js route handlers (never
 // in middleware.ts, which stays Edge-safe / jsonwebtoken-free).
 import { NextRequest } from "next/server";
-import { JwtPayload, Secret } from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import httpStatus from "http-status";
 import { ApiError } from "./ApiError";
 import { jwtHelpers } from "./jwt";
@@ -23,7 +23,7 @@ export const authGuard = async (
 
   let verifiedUser: JwtPayload;
   try {
-    verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
+    verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret);
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized");
   }

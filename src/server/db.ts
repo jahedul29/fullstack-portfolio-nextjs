@@ -14,6 +14,11 @@ export const connectDb = async () => {
   if (!cache.promise) {
     cache.promise = mongoose.connect(config.databaseUrl, { bufferCommands: false });
   }
-  cache.conn = await cache.promise;
+  try {
+    cache.conn = await cache.promise;
+  } catch (err) {
+    cache.promise = null;
+    throw err;
+  }
   return cache.conn;
 };
