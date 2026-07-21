@@ -14,6 +14,8 @@ export type IProject = {
   isFeatured: boolean;
   technologies: Types.ObjectId[];
   priorityScore: number;
+  outcome?: string;
+  role?: string;
 };
 
 export type IProjectMethods = object;

@@ -29,6 +29,7 @@ const skillFormSchema = z.object({
     .number({ invalid_type_error: "Level must be a number" })
     .min(0, "Level must be 0 or greater")
     .max(100, "Level must be 100 or less"),
+  category: z.string().optional(),
 });
 
 type SkillFormValues = z.infer<typeof skillFormSchema>;
@@ -48,6 +49,7 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
     defaultValues: {
       name: skill?.name ?? "",
       level: skill?.level ?? 0,
+      category: skill?.category ?? "",
     },
   });
 
@@ -91,6 +93,23 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
               <FormLabel>Level (0-100)</FormLabel>
               <FormControl>
                 <Input type="number" min={0} max={100} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Category{" "}
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. Frontend, Backend, Infra" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

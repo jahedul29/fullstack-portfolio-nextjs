@@ -10,6 +10,10 @@ export type IExperience = {
   show: boolean;
   technologies: Types.ObjectId[];
   description: string;
+  impact?: string[];
+  metrics?: { label: string; value: string }[];
+  role?: string;
+  teamSize?: number;
 };
 
 export type IExperienceMethods = object;

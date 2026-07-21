@@ -51,6 +51,8 @@ const projectFormSchema = z.object({
     invalid_type_error: "Priority score must be a number",
   }),
   technologies: z.array(z.string()).min(1, "Select at least one technology"),
+  outcome: z.string().optional(),
+  role: z.string().optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -81,6 +83,8 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
       isFeatured: project?.isFeatured ?? false,
       priorityScore: project?.priorityScore ?? 0,
       technologies: project?.technologies?.map((t) => t.id) ?? [],
+      outcome: project?.outcome ?? "",
+      role: project?.role ?? "",
     },
   });
 
@@ -89,6 +93,8 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
       const payload = {
         ...values,
         videoUrl: values.videoUrl || undefined,
+        outcome: values.outcome || undefined,
+        role: values.role || undefined,
       };
       if (isEditing && project) {
         await updateProject({ id: project.id, body: payload }).unwrap();
@@ -174,6 +180,44 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea rows={4} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Role{" "}
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. Lead engineer" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="outcome"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Outcome{" "}
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
+              <FormControl>
+                <Textarea
+                  rows={3}
+                  placeholder="e.g. Cut checkout time by 30% and increased conversion."
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

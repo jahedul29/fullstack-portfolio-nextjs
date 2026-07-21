@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { monthList } from "./experience.constant";
 
 const create = z.object({
   body: z.object({
@@ -21,6 +20,17 @@ const create = z.object({
       required_error:
         "Technologies array is required and must contain valid MongoDB ObjectIds",
     }),
+    impact: z.array(z.string()).optional(),
+    metrics: z
+      .array(
+        z.object({
+          label: z.string(),
+          value: z.string(),
+        })
+      )
+      .optional(),
+    role: z.string().optional(),
+    teamSize: z.number().optional(),
   }),
 });
 
@@ -28,13 +38,22 @@ const update = z.object({
   body: z.object({
     companyName: z.string().optional(),
     position: z.string().optional(),
-    startMonth: z.enum(monthList as [string, ...string[]]).optional(),
-    startYear: z.string().optional(),
-    endMonth: z.enum(monthList as [string, ...string[]]).optional(),
-    endYear: z.string().optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
     isWorkingCurrently: z.boolean().optional(),
     show: z.boolean().optional(),
     technologies: z.array(z.string()).optional(),
+    impact: z.array(z.string()).optional(),
+    metrics: z
+      .array(
+        z.object({
+          label: z.string(),
+          value: z.string(),
+        })
+      )
+      .optional(),
+    role: z.string().optional(),
+    teamSize: z.number().optional(),
   }),
 });
 

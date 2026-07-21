@@ -30,6 +30,8 @@ const create = z.object({
       required_error:
         "Technologies array is required and must contain valid MongoDB ObjectIds",
     }),
+    outcome: z.string().optional(),
+    role: z.string().optional(),
   }),
 });
 
@@ -44,6 +46,8 @@ const update = z.object({
     videoUrl: z.string().optional(),
     isFeatured: z.boolean().optional(),
     technologies: z.array(z.string()).optional(),
+    outcome: z.string().optional(),
+    role: z.string().optional(),
   }),
 });
 

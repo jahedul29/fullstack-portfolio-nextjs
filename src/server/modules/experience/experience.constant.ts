@@ -1,13 +1,9 @@
 export const experienceFilterableFields = ["searchTerm", "show"];
 
 export const experienceSearchableFields = [
-  "id",
   "companyName",
   "position",
-  "startMonth",
-  "endMonth",
-  "startYear",
-  "endYear",
+  "description",
 ];
 
 export const monthList = [

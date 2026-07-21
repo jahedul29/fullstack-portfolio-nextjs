@@ -47,6 +47,12 @@ const projectSchema = new Schema<IProject>(
       type: Number,
       required: true,
     },
+    outcome: {
+      type: String,
+    },
+    role: {
+      type: String,
+    },
   },
   {
     timestamps: true,

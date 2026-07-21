@@ -47,6 +47,7 @@ const Home = async () => {
     undefined,
     [dataFetchingTags.experiences],
     {
+      show: true,
       sortBy: "startTime",
       sortOrder: "desc",
     }

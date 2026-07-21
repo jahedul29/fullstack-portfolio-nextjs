@@ -24,6 +24,7 @@ export type ISkill = {
   _id: string;
   name: string;
   level: number;
+  category?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -58,6 +59,8 @@ export type IProject = {
   isFeatured: boolean;
   technologies: ISkill[];
   priorityScore: number;
+  outcome?: string;
+  role?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -77,6 +80,10 @@ export type IExperience = {
   updatedAt: string;
   __v: number;
   description: string;
+  impact?: string[];
+  metrics?: { label: string; value: string }[];
+  role?: string;
+  teamSize?: number;
   id: string;
 };
 
@@ -92,6 +99,7 @@ export type IOwner = {
   address: string;
   photoUrl: string;
   designation: string;
+  summery?: string;
   aboutOwner: string;
   createdAt: string;
   updatedAt: string;

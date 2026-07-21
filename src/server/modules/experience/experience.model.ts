@@ -1,5 +1,4 @@
 import mongoose, { Model, Schema } from "mongoose";
-import { monthList } from "./experience.constant";
 import { IExperience } from "./experience.interface";
 
 const experienceSchema = new Schema<IExperience>(
@@ -14,7 +13,6 @@ const experienceSchema = new Schema<IExperience>(
     },
     startTime: {
       type: Date,
-      enum: monthList,
       required: true,
     },
     endTime: {
@@ -40,6 +38,21 @@ const experienceSchema = new Schema<IExperience>(
     description: {
       type: String,
       required: true,
+    },
+    impact: {
+      type: [String],
+    },
+    metrics: [
+      {
+        label: { type: String },
+        value: { type: String },
+      },
+    ],
+    role: {
+      type: String,
+    },
+    teamSize: {
+      type: Number,
     },
   },
   {

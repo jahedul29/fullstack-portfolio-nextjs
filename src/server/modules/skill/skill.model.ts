@@ -11,6 +11,9 @@ const skillSchema = new Schema<ISkill>(
       type: Number,
       required: true,
     },
+    category: {
+      type: String,
+    },
   },
   {
     timestamps: true,

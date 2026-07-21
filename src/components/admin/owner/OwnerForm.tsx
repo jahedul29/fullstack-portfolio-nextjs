@@ -39,6 +39,7 @@ const ownerFormSchema = z.object({
     .email("Enter a valid email address"),
   phoneNumber: z.string().min(1, "Phone number is required"),
   designation: z.string().min(1, "Designation is required"),
+  summery: z.string().optional(),
   aboutOwner: z.string().min(1, "About is required"),
   photoUrl: z.string().min(1, "Photo URL is required"),
   linkedInUrl: z.string().min(1, "LinkedIn URL is required"),
@@ -87,6 +88,7 @@ export function OwnerForm({ owner }: OwnerFormProps) {
       email: owner.email ?? "",
       phoneNumber: owner.phoneNumber ?? "",
       designation: owner.designation ?? "",
+      summery: owner.summery ?? "",
       aboutOwner: owner.aboutOwner ?? "",
       photoUrl: owner.photoUrl ?? "",
       linkedInUrl: owner.linkedInUrl ?? "",
@@ -115,6 +117,7 @@ export function OwnerForm({ owner }: OwnerFormProps) {
         facebookUrl: values.facebookUrl || undefined,
         stackOverflowUrl: values.stackOverflowUrl || undefined,
         calanderlyUrl: values.calanderlyUrl || undefined,
+        summery: values.summery || undefined,
         metaKeywords: values.metaKeywords
           ? values.metaKeywords
               .split(",")
@@ -221,6 +224,29 @@ export function OwnerForm({ owner }: OwnerFormProps) {
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="summery"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Short pitch{" "}
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
+              <FormDescription>
+                A one-line summary used for the hero section.
+              </FormDescription>
+              <FormControl>
+                <Input
+                  placeholder="e.g. Senior full-stack engineer building reliable web products."
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
