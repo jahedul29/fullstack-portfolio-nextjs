@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/admin/ThemeToggle";
+import { useLogoutMutation } from "@/redux/api/authApi";
 
 type TopbarProps = {
   onMenuClick: () => void;
@@ -26,25 +27,15 @@ type TopbarProps = {
 
 export function Topbar({ onMenuClick }: TopbarProps) {
   const router = useRouter();
-  const [loggingOut, setLoggingOut] = React.useState(false);
+  const [logout, { isLoading: loggingOut }] = useLogoutMutation();
 
   const handleLogout = async () => {
-    setLoggingOut(true);
     try {
-      const res = await fetch("/api/v1/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        throw new Error("Logout failed");
-      }
-
+      await logout(undefined).unwrap();
       router.push("/login");
       router.refresh();
     } catch (error) {
       toast.error("Could not log out. Please try again.");
-      setLoggingOut(false);
     }
   };
 

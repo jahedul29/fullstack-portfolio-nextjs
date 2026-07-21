@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/getServerUser";
+import { requireAdmin } from "@/app/admin/_lib/requireAdmin";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ThemeProvider } from "@/components/admin/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
