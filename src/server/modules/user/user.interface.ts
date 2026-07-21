@@ -16,7 +16,6 @@ export type IUser = {
 
 export type IUserMethods = object;
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface UserModel extends Model<IUser, object, IUserMethods> {
   isUserExist(email: string): Promise<
     | (Pick<IUser, "email" | "role" | "password"> & {

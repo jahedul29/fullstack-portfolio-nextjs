@@ -17,7 +17,12 @@ type IErrorMessage = {
   message: string;
 };
 
-type RouteContext = { params?: any };
+// `params` is required (not optional): Next.js App Router always passes a
+// context object as the 2nd arg to route handlers (an empty `{}`/`{ params: {} }`
+// for static routes, the matched segment values for dynamic `[id]` routes). Kept
+// as `any` so each route file can narrow it (e.g. `{ id: string }`) at the call
+// site without fighting variance on an optional property.
+type RouteContext = { params: any };
 
 type RouteHandlerFn = (req: NextRequest, context: RouteContext) => Promise<NextResponse>;
 
