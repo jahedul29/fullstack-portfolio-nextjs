@@ -84,7 +84,7 @@ const findAll = async (
     .skip(skip)
     .limit(limit);
 
-  const total = await Blog.countDocuments();
+  const total = await Blog.countDocuments(filterCondition);
 
   return {
     meta: {

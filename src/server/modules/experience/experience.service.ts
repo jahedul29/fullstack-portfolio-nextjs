@@ -89,7 +89,7 @@ const findAll = async (
     .limit(limit)
     .populate("technologies");
 
-  const total = await Experience.countDocuments();
+  const total = await Experience.countDocuments(filterCondition);
 
   return {
     meta: {

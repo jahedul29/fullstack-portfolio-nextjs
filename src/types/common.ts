@@ -39,6 +39,25 @@ export type IBlog = {
   platform: string;
   description: string;
   isFeatured: boolean;
+  priorityScore: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  id: string;
+};
+
+export type IProject = {
+  _id: string;
+  title: string;
+  category: string;
+  photoUrl: string;
+  description: string;
+  githubUrl: string;
+  websiteUrl: string;
+  videoUrl?: string;
+  isFeatured: boolean;
+  technologies: ISkill[];
+  priorityScore: number;
   createdAt: string;
   updatedAt: string;
   __v: number;

@@ -88,7 +88,7 @@ const findAll = async (
     .skip(skip)
     .limit(limit);
 
-  const total = await Skill.countDocuments();
+  const total = await Skill.countDocuments(filterCondition);
 
   return {
     meta: {
