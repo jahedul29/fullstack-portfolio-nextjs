@@ -127,6 +127,18 @@ export type IContribution = {
   id: string;
 };
 
+export type IMessage = {
+  _id: string;
+  name: string;
+  email: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  id: string;
+};
+
 export type IUser = {
   _id: string;
   name: string;

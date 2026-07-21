@@ -10,6 +10,7 @@ import {
   Briefcase,
   UserCircle,
   MessagesSquare,
+  GitPullRequest,
   Users,
   ChevronsLeft,
   ChevronsRight,
@@ -25,7 +26,8 @@ const navItems = [
   { href: "/admin/blogs", label: "Blogs", icon: Newspaper },
   { href: "/admin/experiences", label: "Experiences", icon: Briefcase },
   { href: "/admin/owner", label: "Owner", icon: UserCircle },
-  { href: "/admin/contributions", label: "Contributions", icon: MessagesSquare },
+  { href: "/admin/messages", label: "Messages", icon: MessagesSquare },
+  { href: "/admin/contributions", label: "Contributions", icon: GitPullRequest },
   { href: "/admin/users", label: "Users", icon: Users },
 ];
 

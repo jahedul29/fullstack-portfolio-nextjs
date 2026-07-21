@@ -1,11 +1,15 @@
 "use client";
 
+import { useState } from "react";
+import { toast } from "sonner";
 import CommonButton from "@/components/common/CommonButton";
 import Form from "@/components/common/Form";
 import FormInput from "@/components/common/Form/FormInput";
 import FormTextInput from "@/components/common/Form/FromTextInput";
 import SectionHeader from "@/components/common/User/SectionHeader";
 import { contactFormSchema } from "@/schemas/contactForm";
+import { getErrorMessage } from "@/lib/get-error-message";
+import { useCreateMessageMutation } from "@/redux/api/messageApi";
 import { IOwner } from "@/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
@@ -26,8 +30,27 @@ const GetInTouch = ({
   ownerData: IOwner;
   id?: string;
 }) => {
+  const [honeypot, setHoneypot] = useState("");
+  const [formKey, setFormKey] = useState(0);
+  const [createMessage, { isLoading }] = useCreateMessageMutation();
+
   const onSubmit = async (data: any) => {
-    console.log({ data });
+    if (honeypot) {
+      return;
+    }
+
+    try {
+      await createMessage({
+        name: data.name,
+        email: data.email,
+        message: data.message,
+      }).unwrap();
+      toast.success("Message sent successfully. I will get back to you soon.");
+      setHoneypot("");
+      setFormKey((prev) => prev + 1);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
   };
 
   return (
@@ -123,14 +146,34 @@ const GetInTouch = ({
           </div>
         </div>
         <div className="rounded-sm bg-secondaryBg p-4">
-          <h2 className="text-2xl font-medium text-center text-textSecondary">
+          <h2 className="text-2xl font-medium text-center text-secondaryText">
             Send a message
           </h2>
           <div>
             <Form
+              key={formKey}
               submitHandler={onSubmit}
               resolver={yupResolver(contactFormSchema)}
             >
+              <div
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  width: "1px",
+                  height: "1px",
+                  overflow: "hidden",
+                }}
+                aria-hidden="true"
+              >
+                <input
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(event) => setHoneypot(event.target.value)}
+                />
+              </div>
               <div
                 style={{
                   marginBottom: "10px",
@@ -174,8 +217,9 @@ const GetInTouch = ({
               </div>
               <div>
                 <CommonButton
-                  content="Send"
+                  content={isLoading ? "Sending..." : "Send"}
                   type="submit"
+                  disabled={isLoading}
                   classNames="w-full text-base mt-5 py-2"
                 />
               </div>

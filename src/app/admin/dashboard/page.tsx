@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Briefcase,
   FolderKanban,
+  GitPullRequest,
   MessagesSquare,
   Newspaper,
   Sparkles,
@@ -24,6 +25,7 @@ import { useGetSkillsQuery } from "@/redux/api/skillApi";
 import { useGetBlogsQuery } from "@/redux/api/blogApi";
 import { useGetExperiencesQuery } from "@/redux/api/experienceApi";
 import { useGetContributionsQuery } from "@/redux/api/contributionApi";
+import { useGetMessagesQuery } from "@/redux/api/messageApi";
 import { useGetUsersQuery } from "@/redux/api/userApi";
 
 type StatTile = {
@@ -40,6 +42,7 @@ export default function DashboardPage() {
   const blogs = useGetBlogsQuery({ page: 1, limit: 1 });
   const experiences = useGetExperiencesQuery({ page: 1, limit: 1 });
   const contributions = useGetContributionsQuery({ page: 1, limit: 1 });
+  const messages = useGetMessagesQuery({ page: 1, limit: 1 });
   const users = useGetUsersQuery({ page: 1, limit: 1 });
 
   const recentProjects = useGetProjectsQuery({
@@ -81,9 +84,16 @@ export default function DashboardPage() {
     {
       label: "Contributions",
       href: "/admin/contributions",
-      icon: MessagesSquare,
+      icon: GitPullRequest,
       total: contributions.data?.meta?.total,
       isLoading: contributions.isLoading,
+    },
+    {
+      label: "Messages",
+      href: "/admin/messages",
+      icon: MessagesSquare,
+      total: messages.data?.meta?.total,
+      isLoading: messages.isLoading,
     },
     {
       label: "Users",
