@@ -11,3 +11,5 @@ next-env.d.ts
 # local-only agent context (Claude Code)
 /CLAUDE.md
 /.claude/
+/docs/
+/.superpowers/
