@@ -1,0 +1,13 @@
+/node_modules
+/.next
+/out
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.vercel
+.env
+.env*.local
+
+# local-only agent context (Claude Code)
+/CLAUDE.md
+/.claude/
