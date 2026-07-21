@@ -19,8 +19,6 @@ export const POST = handler(async (req: NextRequest) => {
     validated.body
   );
 
-  // Decode the freshly-issued access token to surface non-sensitive claims
-  // (id/role) to the client without ever putting the raw token in the JSON body.
   const { id, role } = jwtHelpers.verifyToken(accessToken, config.jwt.secret);
 
   const res = sendResponse({
@@ -34,7 +32,7 @@ export const POST = handler(async (req: NextRequest) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24, // 1 day
+    maxAge: 60 * 60 * 24, 
   });
 
   res.cookies.set("refreshToken", refreshToken, {
@@ -42,7 +40,7 @@ export const POST = handler(async (req: NextRequest) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 30, // 30 days
+    maxAge: 60 * 60 * 24 * 30, 
   });
 
   return res;

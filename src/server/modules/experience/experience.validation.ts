@@ -1,6 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/experience/experience.validate.ts
-// (renamed .validate.ts -> .validation.ts)
 import { z } from "zod";
 import { monthList } from "./experience.constant";
 

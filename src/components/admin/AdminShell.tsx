@@ -14,8 +14,6 @@ export function AdminShell({ children }: AdminShellProps) {
   const [collapsed, setCollapsed] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  // Close the mobile drawer automatically if the viewport grows past the
-  // mobile breakpoint while it's open.
   React.useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
     const handleChange = (event: MediaQueryListEvent) => {
@@ -27,14 +25,12 @@ export function AdminShell({ children }: AdminShellProps) {
 
   return (
     <div className="flex h-dvh overflow-hidden bg-background text-foreground">
-      {/* Desktop sidebar */}
       <Sidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((prev) => !prev)}
         className="hidden md:flex"
       />
 
-      {/* Mobile drawer */}
       <div
         className={cn(
           "fixed inset-0 z-50 md:hidden",

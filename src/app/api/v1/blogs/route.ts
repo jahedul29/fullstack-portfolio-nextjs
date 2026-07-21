@@ -31,9 +31,6 @@ export const POST = handler(async (req: NextRequest) => {
   await connectDb();
   await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
 
-  // Validate only and pass the raw body through (see projects/route.ts):
-  // the create schema doesn't declare `priorityScore`, which the Blog model
-  // requires with no default, so the Zod-stripped result would drop it.
   const body = await req.json();
   BlogValidationSchema.create.parse({ body });
 

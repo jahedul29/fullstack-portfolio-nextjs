@@ -8,22 +8,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Reusable `photoUrl` field for the admin forms (owner/project/blog/
-// contribution). Two ways to populate the URL:
-//   1. "Upload image" - picks a local file, gets a signature from our own
-//      authed /api/v1/uploads/sign route, then uploads directly to
-//      Cloudinary's signed upload endpoint from the browser. No modal/portal
-//      involved, so this stays inside the parent Radix Sheet (a Cloudinary
-//      widget in a portal/iframe would register as an "outside click" and
-//      close the Sheet). On success writes the returned secure_url back into
-//      the field via onChange, exactly like typing it in.
-//   2. Manual entry - the original plain <Input>, kept as a fallback so the
-//      form still works with zero Cloudinary setup.
-//
-// Requires NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME / NEXT_PUBLIC_CLOUDINARY_API_KEY
-// to be set for uploads to work. If either is empty, the Upload button is
-// hidden but the manual URL input still renders so the form keeps working
-// unconfigured.
 type ImageUploadFieldProps = {
   value: string;
   onChange: (url: string) => void;
@@ -59,8 +43,6 @@ export function ImageUploadField({
       const timestamp = Math.round(Date.now() / 1000);
       const folder = UPLOAD_FOLDER;
 
-      // 1) Get a signature from our own auth-guarded route. Same-origin
-      // fetch so the httpOnly auth cookie is sent automatically.
       const sigRes = await fetch("/api/v1/uploads/sign", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -71,9 +53,6 @@ export function ImageUploadField({
       }
       const { signature } = await sigRes.json();
 
-      // 2) Upload directly to Cloudinary. The params sent here MUST exactly
-      // match the params that were signed above, or Cloudinary rejects the
-      // signature.
       const fd = new FormData();
       fd.append("file", file);
       fd.append("api_key", apiKey as string);
@@ -95,7 +74,6 @@ export function ImageUploadField({
       toast.error(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
-      // Reset so re-selecting the same file still fires onChange.
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -114,7 +92,6 @@ export function ImageUploadField({
                 fill
                 sizes="96px"
                 className="object-cover"
-                // Preview only; a bad/foreign URL shouldn't blow up the form.
                 unoptimized
               />
             </div>

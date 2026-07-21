@@ -1,5 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/project/project.interface.ts
 /* eslint-disable no-unused-vars */
 import { Types } from "mongoose";
 

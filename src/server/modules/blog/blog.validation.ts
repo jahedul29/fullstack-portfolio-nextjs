@@ -1,6 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/blog/blog.validate.ts
-// (renamed .validate.ts -> .validation.ts)
 import { z } from "zod";
 
 const create = z.object({

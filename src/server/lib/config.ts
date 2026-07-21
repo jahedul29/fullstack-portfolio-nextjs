@@ -1,7 +1,3 @@
-// Typed env accessor. Values are read lazily (via getters) so a missing
-// required var only throws when that specific value is actually used —
-// safe to import this module anywhere (including at cold start) without
-// every env var being present yet.
 
 type JwtConfig = {
   secret: string;
@@ -62,10 +58,6 @@ export const config: AppConfig = {
       },
     };
   },
-  // Signed Cloudinary uploads (admin panel image fields). Cloud name/key are
-  // public (NEXT_PUBLIC_*, also read directly by the client widget) so they
-  // fall back to "" instead of throwing; only the secret is required-at-use,
-  // since it's only ever touched server-side when actually signing a request.
   get cloudinary() {
     return {
       get cloudName() {

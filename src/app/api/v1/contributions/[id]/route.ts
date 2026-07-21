@@ -6,8 +6,6 @@ import { authGuard } from "@/server/lib/authGuard";
 import { USER_ROLE } from "@/server/modules/user/user.constant";
 import { ContributionService } from "@/server/modules/contribution/contribution.service";
 import { ContributionValidationSchema } from "@/server/modules/contribution/contribution.validation";
-// FU-C: findOne populates "technologies" -> ref "Skill"; ensure Skill model
-// is registered (see notes in ../route.ts).
 import "@/server/modules/skill/skill.model";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +13,6 @@ export const dynamic = "force-dynamic";
 export const GET = handler(
   async (_req: NextRequest, ctx: { params: { id: string } }) => {
     await connectDb();
-    // ContributionService.findOne already throws ApiError(NOT_FOUND) when missing.
     const data = await ContributionService.findOne(ctx.params.id);
     return sendResponse({
       statusCode: 200,

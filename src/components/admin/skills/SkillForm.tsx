@@ -23,9 +23,6 @@ import {
 import { ISkill } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 
-// Fields mirror src/server/modules/skill/{skill.interface,skill.validation}.ts
-// exactly: name (string), level (number). `level` is rendered on the landing
-// skill bars as a 0-100 percentage (src/components/user/home/skills/Skills.tsx).
 const skillFormSchema = z.object({
   name: z.string().min(1, "Skill name is required"),
   level: z.coerce

@@ -1,8 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/project/project.model.ts
-//
-// Transform: default export -> named export with a mongoose.models recompile
-// guard (Next.js hot-reload / serverless module reuse safe).
 import mongoose, { Model, Schema } from "mongoose";
 import { projectCategories } from "./project.constant";
 import { IProject } from "./project.interface";

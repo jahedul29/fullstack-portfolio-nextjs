@@ -1,5 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/skill/skill.interface.ts
 /* eslint-disable no-unused-vars */
 export type ISkill = {
   name: string;

@@ -27,13 +27,6 @@ import {
 import { IExperience } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 
-// Fields mirror src/server/modules/experience/experience.interface.ts:
-// companyName, position, startTime/endTime (Date), isWorkingCurrently (bool),
-// show (bool), technologies (Skill id[]), description. `startTime`/`endTime`
-// render as <input type="date"> and are converted to ISO strings on submit;
-// `description` isn't in experience.validation.ts's zod schemas but the
-// model requires it — the route passes the raw body through (see
-// experiences/route.ts), so it must be included here regardless.
 const experienceFormSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
   position: z.string().min(1, "Position is required"),

@@ -1,5 +1,3 @@
-// Ported from the old Express server: fullstack-portfolio-server/src/shared/sendResponse.ts
-// The success body shape is FROZEN — keep byte-identical to the old Express response.
 import { NextResponse } from "next/server";
 
 type IApiResponse<T> = {

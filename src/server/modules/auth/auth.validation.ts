@@ -1,5 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/auth/auth.validation.ts
 import { z } from "zod";
 
 const loginValidation = z.object({

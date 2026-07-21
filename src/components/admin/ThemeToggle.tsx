@@ -10,9 +10,6 @@ export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  // Avoid a light/dark mismatch between the server-rendered markup and the
-  // client's persisted theme preference by only reading `resolvedTheme`
-  // after mount.
   React.useEffect(() => {
     setMounted(true);
   }, []);

@@ -1,8 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/owner/owner.service.ts
-//
-// Transform: shared/errors/errors.clsses -> @/server/lib/ApiError; Owner
-// model default import -> named import with the mongoose recompile guard.
 import httpStatus from "http-status";
 import { ApiError } from "@/server/lib/ApiError";
 import { IOwner } from "./owner.interface";

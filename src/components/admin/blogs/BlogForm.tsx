@@ -27,12 +27,6 @@ import { IBlog } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
-// Fields mirror src/server/modules/blog/{blog.interface,blog.validation}.ts:
-// title, category (free-text string, no enum), photoUrl, blogUrl, platform,
-// description, isFeatured (bool), priorityScore (number, required by the
-// model though absent from the zod create/update schemas — see
-// blogs/route.ts's comment on why the raw body is passed through instead of
-// the zod-stripped result).
 const blogFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   category: z.string().min(1, "Category is required"),

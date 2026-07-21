@@ -8,8 +8,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Deep verification (signature + expiry) beyond middleware's cookie
-  // presence check. Redirects to /login on missing/invalid/expired token.
   await requireAdmin();
 
   return (

@@ -1,6 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/project/project.validate.ts
-// (renamed .validate.ts -> .validation.ts)
 import { z } from "zod";
 import { projectCategories } from "./project.constant";
 

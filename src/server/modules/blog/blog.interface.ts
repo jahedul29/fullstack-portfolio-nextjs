@@ -1,5 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/blog/blog.interface.ts
 /* eslint-disable no-unused-vars */
 export type IBlog = {
   title: string;

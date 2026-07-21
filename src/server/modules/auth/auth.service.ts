@@ -1,13 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/auth/auth.service.ts
-//
-// Transforms: config -> @/server/lib/config (config.jwt.expires_in ->
-// expiresIn, refresh_secret -> refreshSecret, refresh_expires_in ->
-// refreshExpiresIn); helpers/jwtHelpers -> @/server/lib/jwt (JwtHelpers ->
-// jwtHelpers); shared/errors/errors.clsses -> @/server/lib/ApiError; User
-// model default import -> named import with the mongoose recompile guard.
-// `JwtPayload` is a plain data shape from jsonwebtoken, not an Express type,
-// so it stays — services remain HTTP-agnostic.
 import httpStatus from "http-status";
 import { JwtPayload, Secret } from "jsonwebtoken";
 import { config } from "@/server/lib/config";

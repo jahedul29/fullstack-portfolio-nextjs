@@ -18,9 +18,6 @@ type ResourceSheetProps = {
   children: React.ReactNode;
 };
 
-// Thin shadcn Sheet wrapper used by every resource page to host its
-// add/edit react-hook-form. Kept generic (title/description/children) so
-// each <Resource>Form.tsx owns its own fields.
 export function ResourceSheet({
   open,
   onOpenChange,

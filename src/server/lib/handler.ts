@@ -1,11 +1,3 @@
-// Error-mapping wrapper for Next.js route handlers. Replaces the old Express
-// catchAsync + errorHandling middleware pair:
-// fullstack-portfolio-server/src/shared/catchAsync.ts
-// fullstack-portfolio-server/src/app/middlewares/errorHandling.middleware.ts
-// fullstack-portfolio-server/src/shared/errors/errors.handlers.ts
-//
-// Error response body shape is FROZEN:
-// { success: false, message, errorMessages: [{ path, message }] }
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { ZodError } from "zod";
@@ -17,11 +9,6 @@ type IErrorMessage = {
   message: string;
 };
 
-// `params` is required (not optional): Next.js App Router always passes a
-// context object as the 2nd arg to route handlers (an empty `{}`/`{ params: {} }`
-// for static routes, the matched segment values for dynamic `[id]` routes). Kept
-// as `any` so each route file can narrow it (e.g. `{ id: string }`) at the call
-// site without fighting variance on an optional property.
 type RouteContext = { params: any };
 
 type RouteHandlerFn = (req: NextRequest, context: RouteContext) => Promise<NextResponse>;

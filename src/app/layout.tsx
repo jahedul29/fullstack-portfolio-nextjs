@@ -23,8 +23,6 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: ownerData?.photoUrl,
     },
     metadataBase: new URL("https://www.jahedulhoque.com"),
-    // metadataBase:
-    //   typeof window !== "undefined" ? new URL(window.location.href) : undefined,
     openGraph: {
       type: "website",
       url: typeof window !== "undefined" ? window.location.href : "",

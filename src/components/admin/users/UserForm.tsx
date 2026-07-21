@@ -32,12 +32,6 @@ import {
 import { IUser } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 
-// Fields mirror src/server/modules/user/{user.interface,user.validation}.ts.
-// `password` is required on create and optional on edit (an admin editing a
-// user shouldn't have to resend their current password) - the resolver
-// schema below is built per-render from `isEditing` so both cases can share
-// one form. The API never returns a password/hash, so there is nothing to
-// prefill or display for it.
 const userFormSchema = (isEditing: boolean) =>
   z.object({
     name: z.string().min(1, "Name is required"),
@@ -87,8 +81,6 @@ export function UserForm({ user, onSuccess }: UserFormProps) {
     try {
       const { password, ...rest } = values;
       const payload: Record<string, unknown> = { ...rest };
-      // Only include the password when one was actually entered - required
-      // on create (enforced by the schema above), optional on edit.
       if (password) payload.password = password;
 
       if (isEditing && user) {

@@ -1,10 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/user/user.model.ts
-//
-// Transforms: bcrypt -> bcryptjs; config.bcrypt_salt_rounds -> config.bcryptSaltRounds;
-// default export -> named export with a mongoose.models recompile guard
-// (required so Next.js hot-reload / serverless module reuse doesn't attempt
-// to redefine the "User" model against the same mongoose connection).
 import bcrypt from "bcryptjs";
 import mongoose, { Schema, Types } from "mongoose";
 import { config } from "@/server/lib/config";
@@ -87,8 +80,6 @@ userSchema.statics.isPasswordMatch = async function (
   return await bcrypt.compare(givenPassword, currentPassword);
 };
 
-//* You can use this if you want to do some operation before saving it in databse.
-//* Below it's hashing the password before saving.
 userSchema.pre("save", async function (next) {
   if (this.password) {
     this.password = await bcrypt.hash(
@@ -99,8 +90,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-//* You can use this if you want to do some operation before updating it in databse.
-//* Below it's hashing the password before updating.
 userSchema.pre("findOneAndUpdate", async function (next) {
   try {
     const update: any = this.getUpdate();

@@ -28,15 +28,6 @@ const GetInTouch = ({
 }) => {
   const onSubmit = async (data: any) => {
     console.log({ data });
-    // try {
-    //   // const res = await userLogin({ ...data }).unwrap();
-    //   await addAcademicDepartment(data);
-    //   message.success("Academic department added successfully");
-    //   router.push("/admin/academic/department");
-    // } catch (error: any) {
-    //   console.log(error.message);
-    //   message.error(error.message);
-    // }
   };
 
   return (

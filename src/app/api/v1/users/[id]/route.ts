@@ -14,7 +14,6 @@ export const GET = handler(
     await connectDb();
     await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
 
-    // UserService.findOne already throws ApiError(NOT_FOUND) when missing.
     const data = await UserService.findOne(ctx.params.id);
     return sendResponse({
       statusCode: 200,

@@ -1,7 +1,3 @@
-// Edge-runtime middleware — presence-only cookie check for /admin/*. Deep JWT
-// verification (signature + role) happens server-side via authGuard in route
-// handlers / server components. Deliberately no mongoose/jsonwebtoken imports
-// here: those aren't Edge-safe.
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {

@@ -1,5 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/experience/experience.constant.ts
 export const experienceFilterableFields = ["searchTerm", "show"];
 
 export const experienceSearchableFields = [

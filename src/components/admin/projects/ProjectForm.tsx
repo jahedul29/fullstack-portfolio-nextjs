@@ -36,12 +36,6 @@ import { IProject } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
-// Fields mirror src/server/modules/project/{project.interface,project.validation}.ts:
-// title, category (enum), photoUrl, description, githubUrl, websiteUrl,
-// videoUrl (optional), isFeatured (bool), technologies (Skill id[]),
-// priorityScore (number, required by the model though not in the zod
-// `create`/`update` schemas — see projects/route.ts's comment on why the raw
-// body is passed through instead of the zod-stripped result).
 const projectFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   category: z.enum(projectCategories as [string, ...string[]], {
@@ -68,8 +62,6 @@ type ProjectFormProps = {
 
 export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
   const isEditing = !!project;
-  // limit:100 -> effectively "all skills" for the checkbox multi-select; the
-  // portfolio's skill list is small by nature.
   const { data: skillsData } = useGetSkillsQuery({ page: 1, limit: 100 });
   const [createProject, { isLoading: isCreating }] =
     useCreateProjectMutation();

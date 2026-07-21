@@ -1,7 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/helpers/paginationHelper.ts (calculatePagination)
-// fullstack-portfolio-server/src/shared/pagination/pickQueryParams.ts (pickQueryParams,
-// adapted to read from a URLSearchParams instance instead of a plain object).
 
 export type IPaginationParams = {
   page?: number;

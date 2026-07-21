@@ -1,6 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/user/user.validate.ts
-// (renamed .validate.ts -> .validation.ts)
 import { z } from "zod";
 import { userRoles, userStatus } from "./user.constant";
 
@@ -14,9 +11,6 @@ const create = z.object({
         required_error: "email is required",
       })
       .email({ message: "Enter valid email address" }),
-    // FU-F: the User model requires phoneNumber/address (no default) - the
-    // zod schema previously marked them optional, letting invalid docs
-    // through validation only to fail at the mongoose layer.
     phoneNumber: z.string({
       required_error: "phoneNumber is required",
     }),
@@ -43,7 +37,6 @@ const update = z.object({
       .optional(),
     phoneNumber: z.string().optional(),
     role: z.enum([...userRoles] as [string, ...string[]]).optional(),
-    // FU-E: admin edits shouldn't have to resend the current password.
     password: z.string().optional(),
     address: z.string().optional(),
     profileUrl: z.string().optional(),

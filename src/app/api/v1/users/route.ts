@@ -38,10 +38,6 @@ export const POST = handler(async (req: NextRequest) => {
 
   const savedUser = await UserService.create(body);
 
-  // UserService.create builds the doc via `User.create(...).toObject()`,
-  // which bypasses the schema's `password: { select: 0 }` (that option only
-  // applies to query results). Strip it here before responding, mirroring
-  // the old Express UserController.create.
   let data: Omit<IUser, "password"> | null = null;
   if (savedUser) {
     const { password: _password, ...rest } = savedUser as IUser & {

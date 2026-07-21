@@ -29,7 +29,6 @@ export const getData = async (
     isError = false;
     error = null;
   } catch (error) {
-    // Handle other types of errors
     error = error;
     isLoading = false;
     isError = true;
@@ -37,7 +36,7 @@ export const getData = async (
   }
 
   return {
-    data: data?.data, // Assuming the data structure has a 'data' property
+    data: data?.data, 
     isLoading,
     isError,
     error,

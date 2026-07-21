@@ -8,8 +8,6 @@ import { USER_ROLE } from "@/server/modules/user/user.constant";
 import { ExperienceService } from "@/server/modules/experience/experience.service";
 import { experienceFilterableFields } from "@/server/modules/experience/experience.constant";
 import { ExperienceValidationSchema } from "@/server/modules/experience/experience.validation";
-// FU-C: experience.service's findAll/findOne populate("technologies") -> ref
-// "Skill". Force Skill model registration before any populate runs.
 import "@/server/modules/skill/skill.model";
 
 const PAGINATION_KEYS = ["page", "limit", "sortBy", "sortOrder"];
@@ -34,7 +32,6 @@ export const POST = handler(async (req: NextRequest) => {
   await connectDb();
   await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
 
-  // Validate only and pass the raw body through (see projects/route.ts).
   const body = await req.json();
   ExperienceValidationSchema.create.parse({ body });
 

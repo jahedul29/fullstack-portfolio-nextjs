@@ -1,10 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/project/project.service.ts
-//
-// Transforms: helpers/paginationHelper -> @/server/lib/pagination;
-// shared/errors/errors.clsses -> @/server/lib/ApiError; shared/interfaces ->
-// @/server/lib/interfaces; Project model default import -> named import with
-// the mongoose recompile guard. Function names preserved exactly.
 import httpStatus from "http-status";
 import { SortOrder } from "mongoose";
 import { calculatePagination } from "@/server/lib/pagination";
@@ -54,7 +47,6 @@ const findAll = async (
     sortCondition[sortBy] = sortOrder;
   }
 
-  // working on filtering
   const { searchTerm, ...filterData } = filters;
   const andConditions = [];
   let filterCondition = {};

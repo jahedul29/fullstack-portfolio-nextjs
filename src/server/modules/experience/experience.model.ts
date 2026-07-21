@@ -1,8 +1,3 @@
-// Ported from the old Express server:
-// fullstack-portfolio-server/src/app/modules/experience/experience.model.ts
-//
-// Transform: default export -> named export with a mongoose.models recompile
-// guard (Next.js hot-reload / serverless module reuse safe).
 import mongoose, { Model, Schema } from "mongoose";
 import { monthList } from "./experience.constant";
 import { IExperience } from "./experience.interface";

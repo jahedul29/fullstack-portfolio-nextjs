@@ -28,13 +28,6 @@ import { IContribution } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
-// Fields mirror src/server/modules/contribution/{contribution.interface,
-// contribution.validation}.ts: title, photoUrl, contributionFor,
-// description, githubUrl (optional), relatedUrl, isFeatured (bool),
-// technologies (Skill id[]), priorityScore (number, required by the model
-// though not in the zod create/update schemas - see contributions/route.ts's
-// comment on why the raw body is passed through instead of the zod-stripped
-// result).
 const contributionFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   photoUrl: z.string().min(1, "Photo URL is required"),
@@ -61,8 +54,6 @@ export function ContributionForm({
   onSuccess,
 }: ContributionFormProps) {
   const isEditing = !!contribution;
-  // limit:100 -> effectively "all skills" for the checkbox multi-select; the
-  // portfolio's skill list is small by nature (see ProjectForm).
   const { data: skillsData } = useGetSkillsQuery({ page: 1, limit: 100 });
   const [createContribution, { isLoading: isCreating }] =
     useCreateContributionMutation();

@@ -42,11 +42,6 @@ type DataTableProps<TData, TValue> = {
   emptyMessage?: string;
 };
 
-// Generic, reusable TanStack-table + shadcn table wrapper. Sorting/pagination
-// are "manual": the parent page owns page/limit/sortBy/sortOrder/searchTerm
-// state and feeds it straight into an RTK Query list hook, so this component
-// only renders whatever page of rows it's handed and reports state changes
-// back up via the callbacks.
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -64,10 +59,6 @@ export function DataTable<TData, TValue>({
   toolbar,
   emptyMessage = "No results found.",
 }: DataTableProps<TData, TValue>) {
-  // Seeded once from the parent's initial searchTerm; from then on this is
-  // purely local input state, debounced into onSearchTermChange below. (The
-  // parent never resets searchTerm out-of-band today, so there's nothing to
-  // re-sync from later.)
   const [searchInput, setSearchInput] = React.useState(searchTerm);
 
   React.useEffect(() => {
