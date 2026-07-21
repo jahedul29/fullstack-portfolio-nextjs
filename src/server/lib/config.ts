@@ -10,12 +10,19 @@ type JwtConfig = {
   refreshExpiresIn: string;
 };
 
+type CloudinaryConfig = {
+  cloudName: string;
+  apiKey: string;
+  apiSecret: string;
+};
+
 type AppConfig = {
   env: string;
   port: string;
   databaseUrl: string;
   bcryptSaltRounds: string;
   jwt: JwtConfig;
+  cloudinary: CloudinaryConfig;
 };
 
 const requireEnv = (key: string): string => {
@@ -52,6 +59,23 @@ export const config: AppConfig = {
       },
       get refreshExpiresIn() {
         return requireEnv("JWT_REFRESH_EXPIRES_IN");
+      },
+    };
+  },
+  // Signed Cloudinary uploads (admin panel image fields). Cloud name/key are
+  // public (NEXT_PUBLIC_*, also read directly by the client widget) so they
+  // fall back to "" instead of throwing; only the secret is required-at-use,
+  // since it's only ever touched server-side when actually signing a request.
+  get cloudinary() {
+    return {
+      get cloudName() {
+        return process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
+      },
+      get apiKey() {
+        return process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ?? "";
+      },
+      get apiSecret() {
+        return requireEnv("CLOUDINARY_API_SECRET");
       },
     };
   },

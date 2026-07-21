@@ -5,6 +5,7 @@ const nextConfig = {
       { protocol: "https", hostname: "i.ibb.co" },
       { protocol: "https", hostname: "i.imgur.com" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
 };

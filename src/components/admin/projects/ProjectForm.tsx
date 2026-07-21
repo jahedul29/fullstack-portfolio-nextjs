@@ -34,6 +34,7 @@ import {
 } from "@/redux/api/projectApi";
 import { IProject } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 // Fields mirror src/server/modules/project/{project.interface,project.validation}.ts:
 // title, category (enum), photoUrl, description, githubUrl, websiteUrl,
@@ -162,7 +163,11 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
             <FormItem>
               <FormLabel>Photo URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." {...field} />
+                <ImageUploadField
+                  value={field.value}
+                  onChange={field.onChange}
+                  label="Photo"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

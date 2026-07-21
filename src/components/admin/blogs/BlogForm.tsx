@@ -25,6 +25,7 @@ import {
 } from "@/redux/api/blogApi";
 import { IBlog } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 // Fields mirror src/server/modules/blog/{blog.interface,blog.validation}.ts:
 // title, category (free-text string, no enum), photoUrl, blogUrl, platform,
@@ -140,7 +141,11 @@ export function BlogForm({ blog, onSuccess }: BlogFormProps) {
             <FormItem>
               <FormLabel>Photo URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." {...field} />
+                <ImageUploadField
+                  value={field.value}
+                  onChange={field.onChange}
+                  label="Photo"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

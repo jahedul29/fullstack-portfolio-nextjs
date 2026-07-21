@@ -29,6 +29,7 @@
     "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
+    "cloudinary": "^2.10.0",
     "clsx": "^2.1.0",
     "framer-motion": "^10.16.4",
     "http-status": "^1.7.3",

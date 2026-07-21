@@ -21,6 +21,7 @@ import {
 import { useUpdateOwnerMutation } from "@/redux/api/ownerApi";
 import { IOwner } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 // Fields mirror src/server/modules/owner/{owner.interface,owner.model}.ts.
 // `metaKeywords` is a string[] on the model; edited here as a single
@@ -177,7 +178,11 @@ export function OwnerForm({ owner }: OwnerFormProps) {
               <FormItem>
                 <FormLabel>Photo URL</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://..." {...field} />
+                  <ImageUploadField
+                    value={field.value}
+                    onChange={field.onChange}
+                    label="Photo"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

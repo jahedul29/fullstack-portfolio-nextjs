@@ -26,6 +26,7 @@ import {
 } from "@/redux/api/contributionApi";
 import { IContribution } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 // Fields mirror src/server/modules/contribution/{contribution.interface,
 // contribution.validation}.ts: title, photoUrl, contributionFor,
@@ -146,7 +147,11 @@ export function ContributionForm({
             <FormItem>
               <FormLabel>Photo URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." {...field} />
+                <ImageUploadField
+                  value={field.value}
+                  onChange={field.onChange}
+                  label="Photo"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
