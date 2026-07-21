@@ -19,11 +19,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useResourceCount } from "@/components/admin/useResourceCount";
 import { useGetProjectsQuery } from "@/redux/api/projectApi";
 import { useGetSkillsQuery } from "@/redux/api/skillApi";
 import { useGetBlogsQuery } from "@/redux/api/blogApi";
 import { useGetExperiencesQuery } from "@/redux/api/experienceApi";
+import { useGetContributionsQuery } from "@/redux/api/contributionApi";
+import { useGetUsersQuery } from "@/redux/api/userApi";
 
 type StatTile = {
   label: string;
@@ -38,11 +39,8 @@ export default function DashboardPage() {
   const skills = useGetSkillsQuery({ page: 1, limit: 1 });
   const blogs = useGetBlogsQuery({ page: 1, limit: 1 });
   const experiences = useGetExperiencesQuery({ page: 1, limit: 1 });
-  // Contributions/users don't have a full RTK Query api module in this pass
-  // (out of scope — see task-9a-report.md); a plain count fetch is enough
-  // for a dashboard "nice to have" tile.
-  const contributions = useResourceCount("/contributions");
-  const users = useResourceCount("/users");
+  const contributions = useGetContributionsQuery({ page: 1, limit: 1 });
+  const users = useGetUsersQuery({ page: 1, limit: 1 });
 
   const recentProjects = useGetProjectsQuery({
     page: 1,
@@ -84,14 +82,14 @@ export default function DashboardPage() {
       label: "Contributions",
       href: "/admin/contributions",
       icon: MessagesSquare,
-      total: contributions.total,
+      total: contributions.data?.meta?.total,
       isLoading: contributions.isLoading,
     },
     {
       label: "Users",
       href: "/admin/users",
       icon: Users,
-      total: users.total,
+      total: users.data?.meta?.total,
       isLoading: users.isLoading,
     },
   ];

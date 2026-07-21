@@ -93,7 +93,7 @@ const findAll = async (
     .limit(limit)
     .populate("technologies");
 
-  const total = await Contribution.countDocuments();
+  const total = await Contribution.countDocuments(filterCondition);
 
   return {
     meta: {

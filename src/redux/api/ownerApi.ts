@@ -1,33 +1,34 @@
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
+import { IOwner } from "@/types";
 
 const OWNER_URL = "/owners";
 
 const ownerApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    // getOwner: build.query({
-    //     query: (arg: Record<string, any>) => ({
-    //       url: `${OWNER_URL}`,
-    //       method: "GET",
-    //       params: arg,
-    //     }),
-    //     transformResponse: (response: IDepartment[], meta: IMeta) => {
-    //       return {
-    //         admins: response,
-    //         meta,
-    //       };
-    //     },
-    //     providesTags: [tagTypes.admin],
-    //   }),
-    getOwner: build.query({
+    // The real read endpoint is GET /owners/getOwner (see
+    // src/app/api/v1/owners/getOwner/route.ts) - GET /owners has no handler
+    // and 404s.
+    getOwner: build.query<IOwner, void>({
       query: () => ({
-        url: `${OWNER_URL}`,
+        url: `${OWNER_URL}/getOwner`,
         method: "GET",
       }),
-      providesTags: [tagTypes.admin],
+      providesTags: [tagTypes.owner],
+    }),
+    updateOwner: build.mutation<
+      IOwner,
+      { id: string; body: Record<string, unknown> }
+    >({
+      query: ({ id, body }) => ({
+        url: `${OWNER_URL}/${id}`,
+        method: "PATCH",
+        data: body,
+      }),
+      invalidatesTags: [tagTypes.owner],
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetOwnerQuery } = ownerApi;
+export const { useGetOwnerQuery, useUpdateOwnerMutation } = ownerApi;

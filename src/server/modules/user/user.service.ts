@@ -20,8 +20,13 @@ import { IUser, IUserFilters } from "./user.interface";
 import { User } from "./user.model";
 
 const create = async (user: IUser): Promise<IUser | null> => {
-  user.status = USER_STATUS.ACTIVE;
-  user.role = USER_ROLE.MANAGER;
+  // FU-F/task 9b: this used to hard-code role=MANAGER/status=ACTIVE on every
+  // create, which meant an admin could never create another admin from the
+  // admin panel. Honor the incoming role/status when the caller (validated
+  // by user.validation's create schema) supplies them, falling back to the
+  // previous defaults otherwise.
+  user.status = user.status ?? USER_STATUS.ACTIVE;
+  user.role = user.role ?? USER_ROLE.MANAGER;
 
   const savedUser = (await User.create(user)).toObject();
   return savedUser;
@@ -92,7 +97,7 @@ const findAll = async (
     .skip(skip)
     .limit(limit);
 
-  const total = await User.countDocuments();
+  const total = await User.countDocuments(filterCondition);
 
   return {
     meta: {

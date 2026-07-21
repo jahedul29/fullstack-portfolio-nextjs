@@ -98,6 +98,39 @@ export type IOwner = {
   __v: number;
   calanderlyUrl?: string;
   stackOverflowUrl?: string;
+  metaKeywords?: string[];
+  id: string;
+};
+
+export type IContribution = {
+  _id: string;
+  title: string;
+  photoUrl: string;
+  contributionFor: string;
+  description: string;
+  githubUrl?: string;
+  relatedUrl: string;
+  isFeatured: boolean;
+  technologies: ISkill[];
+  priorityScore: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  id: string;
+};
+
+export type IUser = {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  role: "admin" | "manager";
+  address: string;
+  profileUrl?: string;
+  status: "active" | "blocked";
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
   id: string;
 };
 
