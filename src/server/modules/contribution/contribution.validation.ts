@@ -1,7 +1,6 @@
 // Ported from the old Express server:
 // fullstack-portfolio-server/src/app/modules/contribution/contribution.validate.ts
 // (renamed .validate.ts -> .validation.ts)
-import mongoose, { Types } from "mongoose";
 import { z } from "zod";
 
 const create = z.object({
@@ -25,7 +24,7 @@ const create = z.object({
     isFeatured: z.boolean({
       required_error: "isFeatured is required and must be a boolean",
     }),
-    technologies: z.array(z.instanceof(Types.ObjectId), {
+    technologies: z.array(z.string(), {
       required_error:
         "Technologies array is required and must contain valid MongoDB ObjectIds",
     }),
@@ -41,7 +40,7 @@ const update = z.object({
     githubUrl: z.string().optional(),
     relatedUrl: z.string().optional(),
     isFeatured: z.boolean().optional(),
-    technologies: z.array(z.instanceof(mongoose.Types.ObjectId)).optional(),
+    technologies: z.array(z.string()).optional(),
   }),
 });
 

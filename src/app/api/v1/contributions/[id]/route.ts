@@ -4,19 +4,22 @@ import { handler } from "@/server/lib/handler";
 import { sendResponse } from "@/server/lib/sendResponse";
 import { authGuard } from "@/server/lib/authGuard";
 import { USER_ROLE } from "@/server/modules/user/user.constant";
-import { SkillService } from "@/server/modules/skill/skill.service";
-import { SkillValidationSchema } from "@/server/modules/skill/skill.validation";
+import { ContributionService } from "@/server/modules/contribution/contribution.service";
+import { ContributionValidationSchema } from "@/server/modules/contribution/contribution.validation";
+// FU-C: findOne populates "technologies" -> ref "Skill"; ensure Skill model
+// is registered (see notes in ../route.ts).
+import "@/server/modules/skill/skill.model";
 
 export const dynamic = "force-dynamic";
 
 export const GET = handler(
   async (_req: NextRequest, ctx: { params: { id: string } }) => {
     await connectDb();
-    // SkillService.findOne already throws ApiError(NOT_FOUND) when missing.
-    const data = await SkillService.findOne(ctx.params.id);
+    // ContributionService.findOne already throws ApiError(NOT_FOUND) when missing.
+    const data = await ContributionService.findOne(ctx.params.id);
     return sendResponse({
       statusCode: 200,
-      message: "Skill fetched successfully",
+      message: "Contribution fetched successfully",
       data,
     });
   }
@@ -28,12 +31,12 @@ export const PATCH = handler(
     await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
 
     const body = await req.json();
-    SkillValidationSchema.update.parse({ body });
+    ContributionValidationSchema.update.parse({ body });
 
-    const data = await SkillService.update(body, ctx.params.id);
+    const data = await ContributionService.update(body, ctx.params.id);
     return sendResponse({
       statusCode: 200,
-      message: "Skill updated successfully",
+      message: "Contribution updated successfully",
       data,
     });
   }
@@ -44,10 +47,10 @@ export const DELETE = handler(
     await connectDb();
     await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
 
-    const data = await SkillService.deleteOne(ctx.params.id);
+    const data = await ContributionService.deleteOne(ctx.params.id);
     return sendResponse({
       statusCode: 200,
-      message: "Skill deleted successfully",
+      message: "Contribution deleted successfully",
       data,
     });
   }

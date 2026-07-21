@@ -4,19 +4,21 @@ import { handler } from "@/server/lib/handler";
 import { sendResponse } from "@/server/lib/sendResponse";
 import { authGuard } from "@/server/lib/authGuard";
 import { USER_ROLE } from "@/server/modules/user/user.constant";
-import { SkillService } from "@/server/modules/skill/skill.service";
-import { SkillValidationSchema } from "@/server/modules/skill/skill.validation";
+import { UserService } from "@/server/modules/user/user.service";
+import { UserValidationSchema } from "@/server/modules/user/user.validation";
 
 export const dynamic = "force-dynamic";
 
 export const GET = handler(
-  async (_req: NextRequest, ctx: { params: { id: string } }) => {
+  async (req: NextRequest, ctx: { params: { id: string } }) => {
     await connectDb();
-    // SkillService.findOne already throws ApiError(NOT_FOUND) when missing.
-    const data = await SkillService.findOne(ctx.params.id);
+    await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
+
+    // UserService.findOne already throws ApiError(NOT_FOUND) when missing.
+    const data = await UserService.findOne(ctx.params.id);
     return sendResponse({
       statusCode: 200,
-      message: "Skill fetched successfully",
+      message: "User fetched successfully",
       data,
     });
   }
@@ -25,15 +27,15 @@ export const GET = handler(
 export const PATCH = handler(
   async (req: NextRequest, ctx: { params: { id: string } }) => {
     await connectDb();
-    await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
+    await authGuard(req, [USER_ROLE.ADMIN]);
 
     const body = await req.json();
-    SkillValidationSchema.update.parse({ body });
+    UserValidationSchema.update.parse({ body });
 
-    const data = await SkillService.update(body, ctx.params.id);
+    const data = await UserService.update(body, ctx.params.id);
     return sendResponse({
       statusCode: 200,
-      message: "Skill updated successfully",
+      message: "User updated successfully",
       data,
     });
   }
@@ -42,12 +44,12 @@ export const PATCH = handler(
 export const DELETE = handler(
   async (req: NextRequest, ctx: { params: { id: string } }) => {
     await connectDb();
-    await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
+    await authGuard(req, [USER_ROLE.ADMIN]);
 
-    const data = await SkillService.deleteOne(ctx.params.id);
+    const data = await UserService.deleteOne(ctx.params.id);
     return sendResponse({
       statusCode: 200,
-      message: "Skill deleted successfully",
+      message: "User deleted successfully",
       data,
     });
   }

@@ -1,7 +1,6 @@
 // Ported from the old Express server:
 // fullstack-portfolio-server/src/app/modules/project/project.validate.ts
 // (renamed .validate.ts -> .validation.ts)
-import mongoose from "mongoose";
 import { z } from "zod";
 import { projectCategories } from "./project.constant";
 
@@ -47,7 +46,7 @@ const update = z.object({
     websiteUrl: z.string().optional(),
     videoUrl: z.string().optional(),
     isFeatured: z.boolean().optional(),
-    technologies: z.array(z.instanceof(mongoose.Types.ObjectId)).optional(),
+    technologies: z.array(z.string()).optional(),
   }),
 });
 

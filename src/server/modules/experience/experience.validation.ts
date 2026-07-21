@@ -1,7 +1,6 @@
 // Ported from the old Express server:
 // fullstack-portfolio-server/src/app/modules/experience/experience.validate.ts
 // (renamed .validate.ts -> .validation.ts)
-import mongoose from "mongoose";
 import { z } from "zod";
 import { monthList } from "./experience.constant";
 
@@ -38,7 +37,7 @@ const update = z.object({
     endYear: z.string().optional(),
     isWorkingCurrently: z.boolean().optional(),
     show: z.boolean().optional(),
-    technologies: z.array(z.instanceof(mongoose.Types.ObjectId)).optional(),
+    technologies: z.array(z.string()).optional(),
   }),
 });
 
