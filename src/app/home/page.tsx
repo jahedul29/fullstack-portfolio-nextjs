@@ -1,5 +1,6 @@
 import AboutMe from "@/components/user/home/aboutme/AboutMe";
 import Blogs from "@/components/user/home/blogs/Blogs";
+import EmptyState from "@/components/user/home/EmptyState";
 import Experience from "@/components/user/home/experience/Experience";
 import GetInTouch from "@/components/user/home/getintouch/GetInTouch";
 import Header from "@/components/user/home/header/Header";
@@ -14,6 +15,10 @@ const Home = async () => {
     undefined,
     [dataFetchingTags.owners]
   );
+
+  if (!ownerData) {
+    return <EmptyState />;
+  }
 
   const { data: projects, isLoading: isProjectDataLoading } = await getData(
     "/projects",

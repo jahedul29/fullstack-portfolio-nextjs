@@ -34,8 +34,6 @@ const Blogs = ({}: {}) => {
     fetchData();
   }, [queryParams]);
 
-  console.log({ blogs });
-
   return (
     <div className="container mx-auto px-5 sm:px-10 md:px-0 xl:px-20 2xl:px-40 mt-10 lg:mt-20 mb-40">
       <div className="flex flex-col lg:flex-row justify-between">

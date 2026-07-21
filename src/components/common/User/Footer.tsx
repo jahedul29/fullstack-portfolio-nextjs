@@ -1,8 +1,13 @@
-const Footer = () => {
+import { getSiteName } from "@/helpers/config/siteConfig";
+
+const Footer = ({ ownerName }: { ownerName?: string }) => {
+  const year = new Date().getFullYear();
+  const name = ownerName || getSiteName();
+
   return (
     <footer className="py-5">
       <p className="text-warning text-center">
-        ©️2023 all rights reserved by <span>Md. Jahedul Hoque</span>
+        © {year} all rights reserved by <span>{name}</span>
       </p>
     </footer>
   );

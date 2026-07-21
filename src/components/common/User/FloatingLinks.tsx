@@ -39,7 +39,6 @@ const FloatingLinks = async () => {
     },
   ];
 
-  console.log({ ownerData });
   return (
     <div className="hidden md:block ">
       <div className="flex flex-col fixed top-[300px] left-[30px] text-ternaryText text-3xl gap-y-3 z-40">

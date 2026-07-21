@@ -1,5 +1,12 @@
 import dataFetchingTags from "@/constants/dataFetchingTags";
 import { getData } from "@/helpers/data-fetching/data-fetching";
+import {
+  getMetaKeywords,
+  getSiteName,
+  getSiteUrl,
+  getSiteVerification,
+  getTwitterHandle,
+} from "@/helpers/config/siteConfig";
 import Providers from "@/lib/Providers";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -8,36 +15,45 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { data: ownerData, isLoading: isOwnerDataLoading } = await getData(
+  const { data: ownerData } = await getData(
     "/owners/getOwner",
     10,
     [dataFetchingTags.owners]
   );
 
+  const siteName = getSiteName();
+  const title = ownerData ? `${ownerData.name} | ${ownerData.designation}` : siteName;
+  const description = ownerData?.aboutOwner?.split("\n")[0] || siteName;
+  const twitterHandle = getTwitterHandle();
+  const verification = getSiteVerification();
+
   return {
-    title: `${ownerData?.name} | ${ownerData?.designation}`,
-    description: ownerData?.aboutOwner?.split("\n")[0],
-    icons: {
-      icon: ownerData?.photoUrl,
-      apple: ownerData?.photoUrl,
-      shortcut: ownerData?.photoUrl,
-    },
-    metadataBase: new URL("https://www.jahedulhoque.com"),
+    title,
+    description,
+    icons: ownerData?.photoUrl
+      ? {
+          icon: ownerData.photoUrl,
+          apple: ownerData.photoUrl,
+          shortcut: ownerData.photoUrl,
+        }
+      : undefined,
+    metadataBase: new URL(getSiteUrl()),
     openGraph: {
       type: "website",
-      url: typeof window !== "undefined" ? window.location.href : "",
-      title: `${ownerData?.name} | ${ownerData?.designation}`,
-      description: ownerData?.aboutOwner?.split("\n")[0],
-      siteName: ownerData?.name,
-      images: [{ url: ownerData?.photoUrl }],
+      url: "/",
+      title,
+      description,
+      siteName: ownerData?.name || siteName,
+      images: ownerData?.photoUrl ? [{ url: ownerData.photoUrl }] : [],
       locale: "en_US",
     },
-    keywords: ownerData?.metaKeywords,
+    keywords: getMetaKeywords(ownerData?.metaKeywords),
     twitter: {
-      card: ownerData?.name,
-      title: `${ownerData?.name} | ${ownerData?.designation}`,
-      description: ownerData?.aboutOwner?.split("\n")[0],
-      images: [{ url: ownerData?.photoUrl }],
+      card: "summary_large_image",
+      title,
+      description,
+      images: ownerData?.photoUrl ? [{ url: ownerData.photoUrl }] : [],
+      ...(twitterHandle ? { site: twitterHandle, creator: twitterHandle } : {}),
     },
     robots: {
       index: true,
@@ -52,14 +68,7 @@ export async function generateMetadata(): Promise<Metadata> {
         "max-snippet": -1,
       },
     },
-    verification: {
-      google: "google",
-      yandex: "yandex",
-      yahoo: "yahoo",
-      other: {
-        me: ["my-email", "my-link"],
-      },
-    },
+    ...(Object.keys(verification).length > 0 ? { verification } : {}),
   };
 }
 

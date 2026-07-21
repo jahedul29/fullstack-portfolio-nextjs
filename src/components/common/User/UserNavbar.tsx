@@ -1,5 +1,6 @@
 "use client";
 
+import { getSiteName } from "@/helpers/config/siteConfig";
 import Link from "next/link";
 import { useState } from "react";
 import { scroller } from "react-scroll";
@@ -15,9 +16,10 @@ export type UserNavbarSections = {
 
 type UserNavbarProps = {
   sections?: UserNavbarSections;
+  name?: string;
 };
 
-const UserNavbar = ({ sections }: UserNavbarProps) => {
+const UserNavbar = ({ sections, name }: UserNavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navbarItems: {
@@ -64,7 +66,7 @@ const UserNavbar = ({ sections }: UserNavbarProps) => {
     <div className="flex justify-between items-center md:items-start py-5 px-5 md:px-10 bg-primaryBg relative">
       <div>
         <Link href="/home" className="text-ternaryText font-bold text-2xl">
-          Jahedul
+          {name || getSiteName()}
         </Link>
       </div>
       <div className="flex gap-x-6 text-primaryText items-center hidden md:flex">

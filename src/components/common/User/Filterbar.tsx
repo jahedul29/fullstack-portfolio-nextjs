@@ -73,7 +73,7 @@ const Filterbar = ({
           size="large"
           value={defaultSearchValue}
           addonAfter={<IoSearch className="text-white font-medium text-xl" />}
-          placeholder="large size"
+          placeholder="Search..."
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       )}

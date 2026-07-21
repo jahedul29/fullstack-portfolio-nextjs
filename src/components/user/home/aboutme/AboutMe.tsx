@@ -21,7 +21,7 @@ const AboutMe = ({ ownerData, id = "" }: { ownerData: any; id?: string }) => {
         <div className="">
           <div className="w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] relative overflow-hidden rounded-xl">
             <Image
-              alt="Jahedul"
+              alt={`${ownerData?.name} portrait`}
               fill={true}
               src={ownerData?.photoUrl}
               className=" object-contain transition-all duration-1000 scale-100 hover:scale-125"
