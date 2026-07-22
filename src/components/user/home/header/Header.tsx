@@ -60,18 +60,6 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
     .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0))
     .slice(0, 6);
 
-  const categoryCount = new Set(
-    (skills || []).map((skill) => skill.category).filter(Boolean)
-  ).size;
-
-  const stats: { value: string; label: string }[] = [];
-  if (skills?.length) {
-    stats.push({ value: `${skills.length}+`, label: "Skills" });
-  }
-  if (categoryCount > 1) {
-    stats.push({ value: `${categoryCount}`, label: "Focus areas" });
-  }
-
   return (
     <header className="relative overflow-hidden border-b border-border bg-background">
       <div
@@ -157,20 +145,6 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
           )}
         </div>
 
-        {stats.length > 0 && (
-          <div className="mt-12 grid max-w-xl grid-cols-2 gap-6 sm:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <div className="text-2xl font-extrabold text-foreground md:text-3xl">
-                  {stat.value}
-                </div>
-                <div className="text-xs text-muted-foreground md:text-sm">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </header>
   );
