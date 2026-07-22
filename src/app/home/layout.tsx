@@ -6,6 +6,7 @@ import UserNavbar from "@/components/common/User/UserNavbar";
 import { Toaster } from "@/components/ui/sonner";
 import dataFetchingTags from "@/constants/dataFetchingTags";
 import { getData } from "@/helpers/data-fetching/data-fetching";
+import { normalizeSections } from "@/lib/sections";
 import { ReactNode, Suspense } from "react";
 
 const UserLayout = async ({ children }: { children: ReactNode }) => {
@@ -15,12 +16,14 @@ const UserLayout = async ({ children }: { children: ReactNode }) => {
     [dataFetchingTags.owners]
   );
 
+  const sections = normalizeSections(ownerData?.sections);
+
   return (
     <Suspense fallback={<Loading />}>
       <div className="w-screen min-h-screen bg-primaryBg relative">
         <FloatingLinks />
         <GotoTopButton />
-        <UserNavbar sections={ownerData?.sections} name={ownerData?.name} />
+        <UserNavbar sections={sections} name={ownerData?.name} />
         <div className="w-full min-h-screen">{children}</div>
         <Footer ownerName={ownerData?.name} />
         <Toaster />

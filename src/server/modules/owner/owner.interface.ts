@@ -14,12 +14,5 @@ export type IOwner = {
   summery?: string;
   aboutOwner: string;
   metaKeywords?: string[];
-  sections?: {
-    about?: boolean;
-    projects?: boolean;
-    experience?: boolean;
-    blogs?: boolean;
-    skills?: boolean;
-    contact?: boolean;
-  };
+  sections?: { key: string; visible: boolean }[];
 };

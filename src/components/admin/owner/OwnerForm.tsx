@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,8 @@ import {
 import { useUpdateOwnerMutation } from "@/redux/api/ownerApi";
 import { IOwner } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
+import { normalizeSections } from "@/lib/sections";
+import { SECTION_LABELS } from "@/server/modules/owner/owner.constant";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 const ownerFormSchema = z.object({
@@ -50,14 +53,12 @@ const ownerFormSchema = z.object({
   calanderlyUrl: z.string().optional(),
   address: z.string().min(1, "Address is required"),
   metaKeywords: z.string().optional(),
-  sections: z.object({
-    about: z.boolean().optional(),
-    projects: z.boolean().optional(),
-    experience: z.boolean().optional(),
-    blogs: z.boolean().optional(),
-    skills: z.boolean().optional(),
-    contact: z.boolean().optional(),
-  }),
+  sections: z.array(
+    z.object({
+      key: z.string(),
+      visible: z.boolean(),
+    })
+  ),
 });
 
 type OwnerFormValues = z.infer<typeof ownerFormSchema>;
@@ -65,18 +66,6 @@ type OwnerFormValues = z.infer<typeof ownerFormSchema>;
 type OwnerFormProps = {
   owner: IOwner;
 };
-
-const SECTION_TOGGLES: {
-  key: keyof NonNullable<OwnerFormValues["sections"]>;
-  label: string;
-}[] = [
-  { key: "about", label: "About" },
-  { key: "projects", label: "Projects" },
-  { key: "experience", label: "Experience" },
-  { key: "blogs", label: "Blogs" },
-  { key: "skills", label: "Skills" },
-  { key: "contact", label: "Contact" },
-];
 
 export function OwnerForm({ owner }: OwnerFormProps) {
   const [updateOwner, { isLoading: isUpdating }] = useUpdateOwnerMutation();
@@ -99,15 +88,13 @@ export function OwnerForm({ owner }: OwnerFormProps) {
       calanderlyUrl: owner.calanderlyUrl ?? "",
       address: owner.address ?? "",
       metaKeywords: owner.metaKeywords?.join(", ") ?? "",
-      sections: {
-        about: owner.sections?.about ?? true,
-        projects: owner.sections?.projects ?? true,
-        experience: owner.sections?.experience ?? true,
-        blogs: owner.sections?.blogs ?? true,
-        skills: owner.sections?.skills ?? true,
-        contact: owner.sections?.contact ?? true,
-      },
+      sections: normalizeSections(owner.sections),
     },
+  });
+
+  const { fields, move } = useFieldArray({
+    control: form.control,
+    name: "sections",
   });
 
   const onSubmit = async (values: OwnerFormValues) => {
@@ -379,28 +366,65 @@ export function OwnerForm({ owner }: OwnerFormProps) {
           <CardHeader>
             <CardTitle>Landing sections</CardTitle>
             <CardDescription>
-              Toggle which sections appear on the public landing page. The
-              header is always shown.
+              Toggle and reorder which sections appear on the public landing
+              page. The header is always shown first.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {SECTION_TOGGLES.map(({ key, label }) => (
-              <FormField
-                key={key}
-                control={form.control}
-                name={`sections.${key}`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-border p-3">
-                    <FormLabel className="!mt-0">{label}</FormLabel>
-                    <FormControl>
-                      <Switch
-                        checked={field.value ?? true}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            {fields.map((field, index) => (
+              <div
+                key={field.id}
+                className="flex flex-row items-center justify-between gap-4 rounded-lg border border-border p-3"
+              >
+                <span className="font-medium">
+                  {SECTION_LABELS[field.key as keyof typeof SECTION_LABELS] ??
+                    field.key}
+                </span>
+                <div className="flex items-center gap-3">
+                  <FormField
+                    control={form.control}
+                    name={`sections.${index}.visible`}
+                    render={({ field: visibleField }) => (
+                      <FormItem className="flex items-center">
+                        <FormControl>
+                          <Switch
+                            checked={visibleField.value}
+                            onCheckedChange={visibleField.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    aria-label={`Move ${
+                      SECTION_LABELS[
+                        field.key as keyof typeof SECTION_LABELS
+                      ] ?? field.key
+                    } up`}
+                    disabled={index === 0}
+                    onClick={() => move(index, index - 1)}
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    aria-label={`Move ${
+                      SECTION_LABELS[
+                        field.key as keyof typeof SECTION_LABELS
+                      ] ?? field.key
+                    } down`}
+                    disabled={index === fields.length - 1}
+                    onClick={() => move(index, index + 1)}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             ))}
           </CardContent>
         </Card>

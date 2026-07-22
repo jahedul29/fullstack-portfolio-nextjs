@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import { ApiError } from "@/server/lib/ApiError";
+import { normalizeSections } from "@/lib/sections";
 import { IOwner } from "./owner.interface";
 import { Owner } from "./owner.model";
 
@@ -35,9 +36,14 @@ const update = async (
 };
 
 const getOwner = async () => {
-  const result = await Owner.find();
+  const result = await Owner.find().lean();
   if (result.length > 0) {
-    return result[0];
+    const owner = result[0] as IOwner & { _id: unknown; sections?: unknown };
+    return {
+      ...owner,
+      id: String(owner._id),
+      sections: normalizeSections(owner.sections),
+    };
   } else {
     throw new ApiError(httpStatus.NOT_FOUND, "No owner found");
   }

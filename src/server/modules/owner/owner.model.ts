@@ -65,14 +65,13 @@ const ownerSchema = new Schema<IOwner>(
     metaKeywords: {
       type: [String],
     },
-    sections: {
-      about: { type: Boolean, default: true },
-      projects: { type: Boolean, default: true },
-      experience: { type: Boolean, default: true },
-      blogs: { type: Boolean, default: true },
-      skills: { type: Boolean, default: true },
-      contact: { type: Boolean, default: true },
-    },
+    sections: [
+      {
+        key: { type: String, required: true },
+        visible: { type: Boolean, required: true },
+        _id: false,
+      },
+    ],
   },
   {
     timestamps: true,

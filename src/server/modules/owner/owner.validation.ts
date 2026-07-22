@@ -42,14 +42,12 @@ const create = z.object({
     }),
     metaKeywords: z.array(z.string()).optional(),
     sections: z
-      .object({
-        about: z.boolean().optional(),
-        projects: z.boolean().optional(),
-        experience: z.boolean().optional(),
-        blogs: z.boolean().optional(),
-        skills: z.boolean().optional(),
-        contact: z.boolean().optional(),
-      })
+      .array(
+        z.object({
+          key: z.string(),
+          visible: z.boolean(),
+        })
+      )
       .optional(),
   }),
 });
@@ -75,14 +73,12 @@ const update = z.object({
     aboutOwner: z.string().optional(),
     metaKeywords: z.array(z.string()).optional(),
     sections: z
-      .object({
-        about: z.boolean().optional(),
-        projects: z.boolean().optional(),
-        experience: z.boolean().optional(),
-        blogs: z.boolean().optional(),
-        skills: z.boolean().optional(),
-        contact: z.boolean().optional(),
-      })
+      .array(
+        z.object({
+          key: z.string(),
+          visible: z.boolean(),
+        })
+      )
       .optional(),
   }),
 });

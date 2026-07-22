@@ -4,6 +4,7 @@ const dataFetchingTags = {
   skills: "skills",
   blogs: "blogs",
   experiences: "experiences",
+  contributions: "contributions",
 };
 
 export default dataFetchingTags;

@@ -5,62 +5,29 @@ import Link from "next/link";
 import { useState } from "react";
 import { scroller } from "react-scroll";
 
-export type UserNavbarSections = {
-  about?: boolean;
-  projects?: boolean;
-  experience?: boolean;
-  blogs?: boolean;
-  skills?: boolean;
-  contact?: boolean;
-};
+export type UserNavbarSection = { key: string; visible: boolean };
 
 type UserNavbarProps = {
-  sections?: UserNavbarSections;
+  sections?: UserNavbarSection[];
   name?: string;
 };
 
-const UserNavbar = ({ sections, name }: UserNavbarProps) => {
+const NAV_ITEMS: Record<string, { id: string; title: string }> = {
+  about: { id: "aboutMe", title: "About Me" },
+  projects: { id: "projects", title: "Projects" },
+  contributions: { id: "contributions", title: "Contributions" },
+  experience: { id: "experiences", title: "Experiences" },
+  blogs: { id: "blogs", title: "Blogs" },
+  skills: { id: "skills", title: "Skills" },
+};
+
+const UserNavbar = ({ sections = [], name }: UserNavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navbarItems: {
-    id: string;
-    title: string;
-    sectionKey?: keyof UserNavbarSections;
-  }[] = [
-    {
-      id: "aboutMe",
-      title: "About Me",
-      sectionKey: "about",
-    },
-    {
-      id: "experiences",
-      title: "Experiences",
-      sectionKey: "experience",
-    },
-    {
-      id: "projects",
-      title: "Projects",
-      sectionKey: "projects",
-    },
-    {
-      id: "contributions",
-      title: "Contributions",
-    },
-    {
-      id: "blogs",
-      title: "Blogs",
-      sectionKey: "blogs",
-    },
-    {
-      id: "skills",
-      title: "Skills",
-      sectionKey: "skills",
-    },
-  ];
-
-  const visibleNavbarItems = navbarItems.filter(
-    (item) => !item.sectionKey || sections?.[item.sectionKey] !== false
-  );
+  const visibleNavbarItems = sections
+    .filter((section) => section.visible)
+    .map((section) => NAV_ITEMS[section.key])
+    .filter((item): item is { id: string; title: string } => !!item);
 
   return (
     <div className="flex justify-between items-center md:items-start py-5 px-5 md:px-10 bg-primaryBg relative">
