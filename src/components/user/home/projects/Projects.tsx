@@ -68,7 +68,7 @@ const Projects = ({
 
       <div className="mt-12 flex justify-center">
         <Button variant="outline" size="lg" asChild>
-          <Link href="/home/projects">See all projects</Link>
+          <Link href="/projects">See all projects</Link>
         </Button>
       </div>
     </Section>

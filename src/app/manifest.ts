@@ -19,7 +19,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     name,
     short_name: shortName,
     description,
-    start_url: "/home",
+    start_url: "/",
     display: "standalone",
     icons: ownerData?.photoUrl
       ? [

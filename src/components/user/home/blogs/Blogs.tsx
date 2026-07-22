@@ -30,7 +30,7 @@ const Blogs = ({ blogs, id = "" }: { blogs: IBlog[]; id?: string }) => {
 
       <div className="mt-12 flex justify-center">
         <Button variant="outline" size="lg" asChild>
-          <Link href="/home/blogs">See all posts</Link>
+          <Link href="/blogs">See all posts</Link>
         </Button>
       </div>
     </Section>
