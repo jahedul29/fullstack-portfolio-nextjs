@@ -104,15 +104,21 @@ const GetInTouch = ({
   );
 
   return (
-    <Section
-      id={id}
-      eyebrow="Contact"
-      title="Let's talk"
-      subtitle="Open to interesting roles and freelance work — drop a message, it lands in my inbox."
-      muted
-    >
+    <Section id={id} muted>
       <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
         <div className="space-y-6">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-brand">
+              Contact
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+              Let&apos;s talk
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Open to interesting roles and freelance work — drop a message, it
+              lands in my inbox.
+            </p>
+          </div>
           <p className="text-muted-foreground">
             If you want to know more about anything, or just want to say hi,
             my inbox is always open. I will try my best to reply to every

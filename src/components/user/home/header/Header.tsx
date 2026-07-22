@@ -105,7 +105,7 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Download Résumé
+                Download Resume
               </a>
             </Button>
           )}

@@ -24,9 +24,17 @@ const AboutMe = ({
   ].filter((fact) => Boolean(fact.value));
 
   return (
-    <Section id={id} eyebrow="About" title="A bit about me">
+    <Section id={id}>
       <div className="grid gap-11 md:grid-cols-[1.4fr_0.9fr] md:items-start">
         <div className="space-y-4">
+          <div className="mb-2">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-brand">
+              About
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+              A bit about me
+            </h2>
+          </div>
           {paragraphs.map((paragraph, index) => (
             <p key={index} className="text-muted-foreground">
               {paragraph}

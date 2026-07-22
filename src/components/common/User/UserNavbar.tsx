@@ -128,7 +128,7 @@ const UserNavbar = ({ sections = [], name, resumeUrl }: UserNavbarProps) => {
               className="hidden bg-brand text-brand-foreground hover:bg-brand/90 md:inline-flex"
             >
               <a href={trimmedResumeUrl} target="_blank" rel="noopener noreferrer">
-                Résumé
+                Resume
               </a>
             </Button>
           )}
@@ -173,7 +173,7 @@ const UserNavbar = ({ sections = [], name, resumeUrl }: UserNavbarProps) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Résumé
+                      Resume
                     </a>
                   </Button>
                 )}
