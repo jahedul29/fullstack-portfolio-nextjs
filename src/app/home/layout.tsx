@@ -23,8 +23,12 @@ const UserLayout = async ({ children }: { children: ReactNode }) => {
       <div className="w-screen min-h-screen bg-primaryBg relative">
         <FloatingLinks />
         <GotoTopButton />
-        <UserNavbar sections={sections} name={ownerData?.name} />
-        <div className="w-full min-h-screen">{children}</div>
+        <UserNavbar
+          sections={sections}
+          name={ownerData?.name}
+          resumeUrl={ownerData?.resumeUrl}
+        />
+        <main className="w-full min-h-screen">{children}</main>
         <Footer ownerName={ownerData?.name} />
         <Toaster />
       </div>

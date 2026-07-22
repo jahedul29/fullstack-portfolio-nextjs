@@ -7,6 +7,7 @@ import {
   getSiteVerification,
   getTwitterHandle,
 } from "@/helpers/config/siteConfig";
+import { ThemeProvider } from "@/components/admin/ThemeProvider";
 import Providers from "@/lib/Providers";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -79,9 +80,11 @@ export default async function RootLayout({
 }) {
   return (
     <Providers>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <html lang="en" suppressHydrationWarning>
+          <body className={inter.className}>{children}</body>
+        </html>
+      </ThemeProvider>
     </Providers>
   );
 }

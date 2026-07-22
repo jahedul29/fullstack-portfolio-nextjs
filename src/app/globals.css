@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
-
 /* ------------------------------------------------------------------ */
 /* Landing globals (carried over verbatim from the old client)         */
 /* ------------------------------------------------------------------ */
@@ -44,6 +42,8 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
+    --brand: 174.7 83.9% 31.6%;
+    --brand-foreground: 0 0% 100%;
   }
 
   .dark {
@@ -66,5 +66,18 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    --brand: 172.5 66% 50.4%;
+    --brand-foreground: 171.7 82.9% 6.9%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

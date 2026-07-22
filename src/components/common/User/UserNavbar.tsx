@@ -1,8 +1,17 @@
 "use client";
 
+import { ThemeToggle } from "@/components/admin/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { getSiteName } from "@/helpers/config/siteConfig";
+import { cn } from "@/lib/utils";
+import { Menu } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { scroller } from "react-scroll";
 
 export type UserNavbarSection = { key: string; visible: boolean };
@@ -10,97 +19,170 @@ export type UserNavbarSection = { key: string; visible: boolean };
 type UserNavbarProps = {
   sections?: UserNavbarSection[];
   name?: string;
+  resumeUrl?: string;
 };
 
 const NAV_ITEMS: Record<string, { id: string; title: string }> = {
-  about: { id: "aboutMe", title: "About Me" },
+  about: { id: "aboutMe", title: "About" },
+  experience: { id: "experiences", title: "Experience" },
   projects: { id: "projects", title: "Projects" },
-  contributions: { id: "contributions", title: "Contributions" },
-  experience: { id: "experiences", title: "Experiences" },
-  blogs: { id: "blogs", title: "Blogs" },
   skills: { id: "skills", title: "Skills" },
+  contributions: { id: "contributions", title: "Contributions" },
+  blogs: { id: "blogs", title: "Blogs" },
+  contact: { id: "contact", title: "Contact" },
 };
 
-const UserNavbar = ({ sections = [], name }: UserNavbarProps) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const UserNavbar = ({ sections = [], name, resumeUrl }: UserNavbarProps) => {
+  const [activeId, setActiveId] = useState("");
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const visibleNavbarItems = sections
+  const navItems = sections
     .filter((section) => section.visible)
     .map((section) => NAV_ITEMS[section.key])
     .filter((item): item is { id: string; title: string } => !!item);
 
+  const navIds = navItems.map((item) => item.id).join(",");
+
+  useEffect(() => {
+    if (!navIds) return;
+
+    const elements = navIds
+      .split(",")
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [navIds]);
+
+  const handleNavigate = (id: string) => {
+    setMobileOpen(false);
+    scroller.scrollTo(id, {
+      duration: 500,
+      delay: 30,
+      smooth: "easeInOutCubic",
+      offset: -80,
+    });
+  };
+
+  const siteName = name || getSiteName();
+  const trimmedResumeUrl = resumeUrl?.trim();
+
   return (
-    <div className="flex justify-between items-center md:items-start py-5 px-5 md:px-10 bg-primaryBg relative">
-      <div>
-        <Link href="/home" className="text-ternaryText font-bold text-2xl">
-          {name || getSiteName()}
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-10">
+        <Link
+          href="/home"
+          className="flex items-center gap-2 rounded-sm text-lg font-bold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-brand to-brand/70 text-sm font-extrabold text-brand-foreground">
+            {siteName.slice(0, 2).toUpperCase()}
+          </span>
+          {siteName}
         </Link>
-      </div>
-      <div className="flex gap-x-6 text-primaryText items-center hidden md:flex">
-        {visibleNavbarItems?.map((item) => (
-          <a
-            href={`/home/#${item?.id}`}
-            onClick={(e) => {
-              e.preventDefault();
-              scroller.scrollTo(item.id, {
-                duration: 500,
-                delay: 30,
-                smooth: "easeInOutCubic",
-                offset: -100,
-              });
-            }}
-            key={item?.id}
-            className="border-b-2 border-transparent hover:border-ternaryText hover:text-ternaryText pb-1 transition-all duration-300 cursor-pointer"
-          >
-            {item.title}
-          </a>
-        ))}
-      </div>
-      <div className="block md:hidden">
-        <label
-          className="btn btn-ghost btn-circle text-primaryText"
-          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+
+        <nav
+          className="hidden items-center gap-6 md:flex"
+          aria-label="Primary"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h7"
-            />
-          </svg>
-        </label>
-        <div
-          className={`absolute bg-secondaryBg transition-all duration-300 flex flex-col w-screen left-0 overflow-hidden top-[85px] z-20 text-primaryText ${
-            isMobileMenuOpen ? "max-h-screen" : "max-h-0"
-          }`}
-        >
-          {visibleNavbarItems?.map((item) => (
+          {navItems.map((item) => (
             <a
-              href={`/home/#${item?.id}`}
-              className="border-b-2 border-transparent hover:border-ternaryText hover:text-ternaryText py-3 transition-all duration-300 w-full text-center"
               key={item.id}
-              onClick={(e) => {
-                e.preventDefault();
-                scroller.scrollTo(item.id, {
-                  duration: 500,
-                  delay: 30,
-                  smooth: "easeInOutCubic",
-                });
+              href={`/home/#${item.id}`}
+              onClick={(event) => {
+                event.preventDefault();
+                handleNavigate(item.id);
               }}
+              aria-current={activeId === item.id ? "true" : undefined}
+              className={cn(
+                "rounded-sm text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                activeId === item.id && "text-foreground"
+              )}
             >
               {item.title}
             </a>
           ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+
+          {trimmedResumeUrl && (
+            <Button
+              asChild
+              size="sm"
+              className="hidden bg-brand text-brand-foreground hover:bg-brand/90 md:inline-flex"
+            >
+              <a href={trimmedResumeUrl} target="_blank" rel="noopener noreferrer">
+                Résumé
+              </a>
+            </Button>
+          )}
+
+          <div className="md:hidden">
+            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Open menu">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="flex flex-col gap-6">
+                <nav
+                  className="mt-6 flex flex-col gap-4"
+                  aria-label="Mobile primary"
+                >
+                  {navItems.map((item) => (
+                    <a
+                      key={item.id}
+                      href={`/home/#${item.id}`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleNavigate(item.id);
+                      }}
+                      aria-current={activeId === item.id ? "true" : undefined}
+                      className={cn(
+                        "rounded-sm text-base font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        activeId === item.id && "text-foreground"
+                      )}
+                    >
+                      {item.title}
+                    </a>
+                  ))}
+                </nav>
+                {trimmedResumeUrl && (
+                  <Button
+                    asChild
+                    className="bg-brand text-brand-foreground hover:bg-brand/90"
+                  >
+                    <a
+                      href={trimmedResumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Résumé
+                    </a>
+                  </Button>
+                )}
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
