@@ -1,12 +1,29 @@
 "use client";
 
 import * as React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { Control, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { GripVertical } from "lucide-react";
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -73,6 +90,72 @@ const ownerFormSchema = z.object({
 
 type OwnerFormValues = z.infer<typeof ownerFormSchema>;
 
+type SortableSectionRowProps = {
+  id: string;
+  label: string;
+  control: Control<OwnerFormValues>;
+  index: number;
+};
+
+function SortableSectionRow({
+  id,
+  label,
+  control,
+  index,
+}: SortableSectionRowProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "flex flex-row items-center justify-between gap-4 rounded-lg border border-border bg-card p-3",
+        isDragging && "relative z-10 shadow-md"
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          aria-label={`Reorder ${label}`}
+          className="cursor-grab touch-none text-muted-foreground hover:text-foreground active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+        <span className="font-medium">{label}</span>
+      </div>
+      <FormField
+        control={control}
+        name={`sections.${index}.visible`}
+        render={({ field: visibleField }) => (
+          <FormItem className="flex items-center">
+            <FormControl>
+              <Switch
+                checked={visibleField.value}
+                onCheckedChange={visibleField.onChange}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+}
+
 type OwnerFormProps = {
   owner: IOwner;
 };
@@ -110,6 +193,26 @@ export function OwnerForm({ owner }: OwnerFormProps) {
     control: form.control,
     name: "sections",
   });
+
+  const sectionSensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 4 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleSectionDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = fields.findIndex((field) => field.key === active.id);
+    const newIndex = fields.findIndex((field) => field.key === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+
+    move(oldIndex, newIndex);
+  };
 
   const onSubmit = async (values: OwnerFormValues) => {
     try {
@@ -482,61 +585,32 @@ export function OwnerForm({ owner }: OwnerFormProps) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {fields.map((field, index) => (
-              <div
-                key={field.id}
-                className="flex flex-row items-center justify-between gap-4 rounded-lg border border-border p-3"
+            <DndContext
+              sensors={sectionSensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleSectionDragEnd}
+            >
+              <SortableContext
+                items={fields.map((field) => field.key)}
+                strategy={verticalListSortingStrategy}
               >
-                <span className="font-medium">
-                  {SECTION_LABELS[field.key as keyof typeof SECTION_LABELS] ??
-                    field.key}
-                </span>
-                <div className="flex items-center gap-3">
-                  <FormField
-                    control={form.control}
-                    name={`sections.${index}.visible`}
-                    render={({ field: visibleField }) => (
-                      <FormItem className="flex items-center">
-                        <FormControl>
-                          <Switch
-                            checked={visibleField.value}
-                            onCheckedChange={visibleField.onChange}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    aria-label={`Move ${
-                      SECTION_LABELS[
-                        field.key as keyof typeof SECTION_LABELS
-                      ] ?? field.key
-                    } up`}
-                    disabled={index === 0}
-                    onClick={() => move(index, index - 1)}
-                  >
-                    <ChevronUp className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    aria-label={`Move ${
-                      SECTION_LABELS[
-                        field.key as keyof typeof SECTION_LABELS
-                      ] ?? field.key
-                    } down`}
-                    disabled={index === fields.length - 1}
-                    onClick={() => move(index, index + 1)}
-                  >
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
+                <div className="space-y-3">
+                  {fields.map((field, index) => (
+                    <SortableSectionRow
+                      key={field.id}
+                      id={field.key}
+                      label={
+                        SECTION_LABELS[
+                          field.key as keyof typeof SECTION_LABELS
+                        ] ?? field.key
+                      }
+                      control={form.control}
+                      index={index}
+                    />
+                  ))}
                 </div>
-              </div>
-            ))}
+              </SortableContext>
+            </DndContext>
           </CardContent>
         </Card>
 
