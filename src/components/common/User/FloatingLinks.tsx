@@ -1,60 +1,60 @@
-import dataFetchingTags from "@/constants/dataFetchingTags";
-import { getData } from "@/helpers/data-fetching/data-fetching";
-import { Tooltip } from "antd";
 import Link from "next/link";
 import { FaFacebook, FaGithub, FaLinkedin } from "react-icons/fa";
 import { PiStackOverflowLogoFill } from "react-icons/pi";
 
+import dataFetchingTags from "@/constants/dataFetchingTags";
+import { getData } from "@/helpers/data-fetching/data-fetching";
+
 const FloatingLinks = async () => {
-  const { data: ownerData, isLoading: isOwnerDataLoading } = await getData(
+  const { data: ownerData } = await getData(
     "/owners/getOwner",
     undefined,
     [dataFetchingTags.owners]
   );
 
   const availableLinks = [
-    {
-      id: "1",
-      title: "github",
-      url: ownerData?.githubUrl || "",
-      icon: <FaGithub />,
-    },
+    { id: "1", label: "GitHub", url: ownerData?.githubUrl || "", icon: <FaGithub /> },
     {
       id: "2",
-      title: "linkedin",
+      label: "LinkedIn",
       url: ownerData?.linkedInUrl || "",
       icon: <FaLinkedin />,
     },
     {
       id: "3",
-      title: "facebook",
+      label: "Facebook",
       url: ownerData?.facebookUrl || "",
       icon: <FaFacebook />,
     },
     {
       id: "4",
-      title: "stackoverflow",
+      label: "Stack Overflow",
       url: ownerData?.stackOverflowUrl || "",
       icon: <PiStackOverflowLogoFill />,
     },
-  ];
+  ].filter((link) => link.url.length > 0);
+
+  if (availableLinks.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="hidden md:block ">
-      <div className="flex flex-col fixed top-[300px] left-[30px] text-ternaryText text-3xl gap-y-3 z-40">
-        {availableLinks?.map((item) => (
-          <Tooltip title={item.title} key={item.id}>
-            <Link
-              href={item.url}
-              key={item.id}
-              target={item?.url.length > 0 ? "_blank" : "_self"}
-              aria-label="Redirect to social handler"
-            >
-              {item.icon}
-            </Link>
-          </Tooltip>
+    <div className="hidden md:block">
+      <div className="fixed left-[30px] top-[300px] z-40 flex flex-col gap-y-3 text-3xl">
+        {availableLinks.map((item) => (
+          <Link
+            key={item.id}
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visit ${item.label} profile`}
+            title={item.label}
+            className="text-muted-foreground transition-colors hover:text-brand"
+          >
+            {item.icon}
+          </Link>
         ))}
-        <div className="w-[1px] bg-ternaryText h-[130px] mt-3 ml-3"></div>
+        <div className="ml-3 mt-3 h-[130px] w-px bg-border" />
       </div>
     </div>
   );

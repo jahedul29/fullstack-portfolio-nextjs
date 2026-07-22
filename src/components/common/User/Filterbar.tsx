@@ -1,11 +1,21 @@
 "use client";
 
-import { useDebounced } from "@/hooks/common";
-import { ISelectOptions } from "@/types";
-import { Input, Select } from "antd";
-import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { IoSearch } from "react-icons/io5";
+
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useDebounced } from "@/hooks/common";
+import { cn } from "@/lib/utils";
+import { ISelectOptions } from "@/types";
+
+const ALL_VALUE = "__all__";
 
 type IFilterBarProps = {
   showSearch?: boolean;
@@ -16,7 +26,6 @@ type IFilterBarProps = {
   filterKey: string;
   queryParams?: { [key: string]: string | number | undefined };
   setQueryParams?: (query: { [key: string]: string | number } | any) => void;
-  allowSelectClear?: boolean;
   classNames?: string;
 };
 
@@ -27,17 +36,13 @@ const Filterbar = ({
   defaultSearchValue,
   defaultSelectValue,
   filterKey = "",
-  queryParams,
   setQueryParams,
-  allowSelectClear = false,
   classNames = "",
 }: IFilterBarProps) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filter, setFilter] = useState<string>("");
-  const handleSelectChange = (value: string) => {
-    setFilter(value);
-  };
-  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState<string>(
+    defaultSearchValue ?? ""
+  );
+  const [filter, setFilter] = useState<string>(defaultSelectValue ?? "");
 
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
@@ -52,30 +57,42 @@ const Filterbar = ({
         [filterKey]: filter,
       }));
     }
-  }, [debouncedTerm, searchTerm, setQueryParams, filter, filterKey]);
+  }, [debouncedTerm, setQueryParams, filter, filterKey]);
 
   return (
-    <div className={`flex gap-x-4 w-1/2 ${classNames}`}>
+    <div className={cn("flex w-full gap-3 sm:w-1/2", classNames)}>
       {showSelect && (
         <Select
-          allowClear={allowSelectClear}
-          style={{ width: "100%", height: "fit-content" }}
-          size="large"
-          placeholder="Please select"
-          value={defaultSelectValue}
-          onChange={handleSelectChange}
-          options={options}
-          className="shadow-lg"
-        />
+          value={filter === "" ? ALL_VALUE : filter}
+          onValueChange={(value) =>
+            setFilter(value === ALL_VALUE ? "" : value)
+          }
+        >
+          <SelectTrigger className="bg-card sm:w-48">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            {options?.map((option) => (
+              <SelectItem
+                key={option.value || ALL_VALUE}
+                value={option.value === "" ? ALL_VALUE : option.value}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       )}
       {showSearch && (
-        <Input
-          size="large"
-          value={defaultSearchValue}
-          addonAfter={<IoSearch className="text-white font-medium text-xl" />}
-          placeholder="Search..."
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="bg-card pl-9"
+            defaultValue={defaultSearchValue}
+            placeholder="Search..."
+            onChange={(event) => setSearchTerm(event.target.value)}
+          />
+        </div>
       )}
     </div>
   );

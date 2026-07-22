@@ -1,27 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
-import CommonButton from "@/components/common/CommonButton";
-import Form from "@/components/common/Form";
-import FormInput from "@/components/common/Form/FormInput";
-import FormTextInput from "@/components/common/Form/FromTextInput";
-import SectionHeader from "@/components/common/User/SectionHeader";
-import { contactFormSchema } from "@/schemas/contactForm";
-import { getErrorMessage } from "@/lib/get-error-message";
-import { useCreateMessageMutation } from "@/redux/api/messageApi";
-import { IOwner } from "@/types";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { ReactNode, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   FaFacebook,
   FaGithub,
   FaLinkedin,
   FaMailBulk,
-  FaPenAlt,
+  FaMapMarkerAlt,
   FaPhone,
 } from "react-icons/fa";
 import { PiStackOverflowLogoFill } from "react-icons/pi";
+
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import Section from "@/components/user/home/Section";
+import { getErrorMessage } from "@/lib/get-error-message";
+import { useCreateMessageMutation } from "@/redux/api/messageApi";
+import { IOwner } from "@/types";
+
+const contactFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email"),
+  message: z.string().min(1, "Message is required"),
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
+
+type SocialLink = {
+  href: string;
+  label: string;
+  icon: ReactNode;
+};
 
 const GetInTouch = ({
   ownerData,
@@ -31,142 +55,151 @@ const GetInTouch = ({
   id?: string;
 }) => {
   const [honeypot, setHoneypot] = useState("");
-  const [formKey, setFormKey] = useState(0);
   const [createMessage, { isLoading }] = useCreateMessageMutation();
 
-  const onSubmit = async (data: any) => {
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: { name: "", email: "", message: "" },
+  });
+
+  const onSubmit = async (values: ContactFormValues) => {
     if (honeypot) {
       return;
     }
 
     try {
-      await createMessage({
-        name: data.name,
-        email: data.email,
-        message: data.message,
-      }).unwrap();
+      await createMessage(values).unwrap();
       toast.success("Message sent successfully. I will get back to you soon.");
+      form.reset();
       setHoneypot("");
-      setFormKey((prev) => prev + 1);
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
   };
 
+  const candidateSocialLinks: (SocialLink | undefined)[] = [
+    ownerData?.githubUrl
+      ? { href: ownerData.githubUrl, label: "GitHub", icon: <FaGithub /> }
+      : undefined,
+    ownerData?.linkedInUrl
+      ? {
+          href: ownerData.linkedInUrl,
+          label: "LinkedIn",
+          icon: <FaLinkedin />,
+        }
+      : undefined,
+    ownerData?.facebookUrl
+      ? { href: ownerData.facebookUrl, label: "Facebook", icon: <FaFacebook /> }
+      : undefined,
+    ownerData?.stackOverflowUrl
+      ? {
+          href: ownerData.stackOverflowUrl,
+          label: "Stack Overflow",
+          icon: <PiStackOverflowLogoFill />,
+        }
+      : undefined,
+  ];
+  const socialLinks = candidateSocialLinks.filter(
+    (link): link is SocialLink => Boolean(link)
+  );
+
   return (
-    <section
-      className="container mx-auto px-5 sm:px-10 md:px-0 xl:px-20 2xl:px-40 mt-40 mb-40"
+    <Section
       id={id}
+      eyebrow="Contact"
+      title="Let's talk"
+      subtitle="Open to interesting roles and freelance work — drop a message, it lands in my inbox."
+      muted
     >
-      <SectionHeader title="Get In Touch" classNames="text-center" />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-10 lg:gap-y-0">
-        <div className="flex flex-col gap-y-8">
-          <p className="text-lg text-lightText">
-            If you want to know more about anything. You can contact with me.
-            You can also give me opinion about my page. My inbox is always open
-            for you. I will try my best to reply all of your message
+      <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div className="space-y-6">
+          <p className="text-muted-foreground">
+            If you want to know more about anything, or just want to say hi,
+            my inbox is always open. I will try my best to reply to every
+            message.
           </p>
 
-          <div className="flex flex-col gap-y-1">
-            <p className="flex gap-x-2 items-center text-ternaryText font-semibold text-lg">
-              <FaPenAlt /> {ownerData?.address}
-            </p>
-            <Link
-              href={`https://mail.google.com/mail/u/0/?fs=1&to=${ownerData?.email}&tf=cm`}
-              target="_blank"
-              aria-label="Redirect to mail address"
-            >
-              <p className="flex gap-x-2 items-center text-ternaryText font-semibold text-lg">
-                {" "}
-                <FaMailBulk />
-                {ownerData?.email}
+          <div className="space-y-2 text-sm">
+            {ownerData?.address && (
+              <p className="flex items-center gap-2 font-semibold text-foreground">
+                <FaMapMarkerAlt className="text-brand" />
+                {ownerData.address}
               </p>
-            </Link>
-            <p className="flex gap-x-2 items-center text-ternaryText font-semibold text-lg">
-              {" "}
-              <FaPhone />
-              {ownerData?.phoneNumber}
-            </p>
+            )}
+            {ownerData?.email && (
+              <Link
+                href={`https://mail.google.com/mail/u/0/?fs=1&to=${ownerData.email}&tf=cm`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Send an email"
+                className="flex items-center gap-2 font-semibold text-foreground transition-colors hover:text-brand"
+              >
+                <FaMailBulk className="text-brand" />
+                {ownerData.email}
+              </Link>
+            )}
+            {ownerData?.phoneNumber && (
+              <p className="flex items-center gap-2 font-semibold text-foreground">
+                <FaPhone className="text-brand" />
+                {ownerData.phoneNumber}
+              </p>
+            )}
           </div>
 
           {ownerData?.calanderlyUrl && (
-            <div className="text-lg">
-              <p className="text-lightText">Schedule a meeting:</p>
+            <div className="text-sm">
+              <p className="mb-1 text-muted-foreground">Schedule a meeting:</p>
               <Link
-                className="text-ternaryText"
-                href={ownerData?.calanderlyUrl}
+                href={ownerData.calanderlyUrl}
                 target="_blank"
-                aria-label="Redirect to calanderly"
+                rel="noopener noreferrer"
+                aria-label="Schedule a meeting via Calendly"
+                className="font-semibold text-brand hover:underline"
               >
-                {ownerData?.calanderlyUrl}
+                {ownerData.calanderlyUrl}
               </Link>
             </div>
           )}
 
-          <div className="text-lg">
-            <p className="text-lightText">Social Handles:</p>
-            <div className="flex text-4xl gap-4 mt-2">
-              {ownerData?.githubUrl && (
-                <Link
-                  aria-label="Redirect to github social handler"
-                  href={ownerData?.githubUrl}
-                  target="_blank"
-                >
-                  <FaGithub className="rounded-full border-2 border-ternaryText text-lightText" />
-                </Link>
-              )}
-              {ownerData?.facebookUrl && (
-                <Link
-                  aria-label="Redirect to facebook social handler"
-                  href={ownerData?.facebookUrl}
-                  target="_blank"
-                >
-                  <FaFacebook className="rounded-full border-2 border-ternaryText text-lightText" />
-                </Link>
-              )}
-              {ownerData?.linkedInUrl && (
-                <Link
-                  aria-label="Redirect to linkedin social handler"
-                  href={ownerData?.linkedInUrl}
-                  target="_blank"
-                >
-                  <FaLinkedin className="rounded-full border-2 border-ternaryText text-lightText" />
-                </Link>
-              )}
-              {ownerData?.stackOverflowUrl && (
-                <Link
-                  aria-label="Redirect to stackoverflow social handler"
-                  href={ownerData?.stackOverflowUrl}
-                  target="_blank"
-                >
-                  <PiStackOverflowLogoFill className="rounded-full border-2 border-ternaryText text-lightText" />
-                </Link>
-              )}
+          {socialLinks.length > 0 && (
+            <div>
+              <p className="mb-3 text-sm text-muted-foreground">
+                Social handles:
+              </p>
+              <div className="flex gap-3">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label}
+                    title={link.label}
+                    className="flex h-11 w-11 items-center justify-center rounded-lg border border-border text-lg text-muted-foreground transition-colors hover:border-brand hover:text-brand"
+                  >
+                    {link.icon}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
-        <div className="rounded-sm bg-secondaryBg p-4">
-          <h2 className="text-2xl font-medium text-center text-secondaryText">
-            Send a message
-          </h2>
-          <div>
-            <Form
-              key={formKey}
-              submitHandler={onSubmit}
-              resolver={yupResolver(contactFormSchema)}
+
+        <Card className="p-6">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+              noValidate
             >
               <div
-                style={{
-                  position: "absolute",
-                  left: "-9999px",
-                  width: "1px",
-                  height: "1px",
-                  overflow: "hidden",
-                }}
                 aria-hidden="true"
+                className="absolute left-[-9999px] h-px w-px overflow-hidden"
               >
+                <label htmlFor="company">Company</label>
                 <input
                   type="text"
+                  id="company"
                   name="company"
                   tabIndex={-1}
                   autoComplete="off"
@@ -174,60 +207,65 @@ const GetInTouch = ({
                   onChange={(event) => setHoneypot(event.target.value)}
                 />
               </div>
-              <div
-                style={{
-                  marginBottom: "10px",
-                  marginTop: "20px",
-                }}
-              >
-                <FormInput
-                  type="text"
-                  name="email"
-                  label=""
-                  placeholder="Email"
-                  size="large"
-                />
-              </div>
-              <div
-                style={{
-                  marginBottom: "10px",
-                  marginTop: "20px",
-                }}
-              >
-                <FormInput
-                  type="text"
-                  name="name"
-                  label=""
-                  placeholder="Name"
-                  size="large"
-                />
-              </div>
-              <div
-                style={{
-                  marginBottom: "10px",
-                  marginTop: "20px",
-                }}
-              >
-                <FormTextInput
-                  name="message"
-                  label=""
-                  placeholder="Enter your message here"
-                  size="large"
-                />
-              </div>
-              <div>
-                <CommonButton
-                  content={isLoading ? "Sending..." : "Send"}
-                  type="submit"
-                  disabled={isLoading}
-                  classNames="w-full text-base mt-5 py-2"
-                />
-              </div>
-            </Form>
-          </div>
-        </div>
+
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="you@email.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Message</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={4}
+                        placeholder="What's up?"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Sending…" : "Send message"}
+              </Button>
+            </form>
+          </Form>
+        </Card>
       </div>
-    </section>
+    </Section>
   );
 };
 

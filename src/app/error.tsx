@@ -1,14 +1,24 @@
 "use client";
 
-import { Row } from "antd";
+import { Button } from "@/components/ui/button";
 
-const ErrorPage = () => {
+const ErrorPage = ({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) => {
   return (
-    <Row justify={"center"} align={"middle"} style={{ height: "100vh" }}>
-      <h2 style={{ color: "red" }} className="text-6xl">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
+      <h2 className="text-3xl font-bold text-destructive sm:text-4xl">
         Something went wrong
       </h2>
-    </Row>
+      <p className="max-w-md text-muted-foreground">
+        {error?.message || "An unexpected error occurred. Please try again."}
+      </p>
+      <Button onClick={reset}>Try again</Button>
+    </div>
   );
 };
 

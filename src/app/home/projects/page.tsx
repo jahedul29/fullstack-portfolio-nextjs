@@ -1,18 +1,47 @@
 "use client";
 
-import Filterbar from "@/components/common/User/Filterbar";
-import SectionHeader from "@/components/common/User/SectionHeader";
-import dataFetchingTags from "@/constants/dataFetchingTags";
-import { getData } from "@/helpers/data-fetching/data-fetching";
-import { ISkill } from "@/types";
-import { Tooltip } from "antd";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaGithub, FaLink, FaYoutube } from "react-icons/fa";
 
-const Projects = ({}: {}) => {
-  const [projects, setProjects] = useState([]);
+import Filterbar from "@/components/common/User/Filterbar";
+import ContentCard, {
+  ContentCardLink,
+} from "@/components/user/home/ContentCard";
+import dataFetchingTags from "@/constants/dataFetchingTags";
+import { getData } from "@/helpers/data-fetching/data-fetching";
+import { IProject } from "@/types";
+
+const CATEGORY_OPTIONS = [
+  { label: "All categories", value: "" },
+  { label: "Fullstack", value: "fullstack" },
+  { label: "Frontend", value: "frontend" },
+  { label: "Backend", value: "backend" },
+];
+
+const buildProjectLinks = (project: IProject): ContentCardLink[] => {
+  const links: ContentCardLink[] = [];
+  if (project?.githubUrl) {
+    links.push({
+      href: project.githubUrl,
+      label: "GitHub",
+      icon: <FaGithub />,
+    });
+  }
+  if (project?.websiteUrl) {
+    links.push({ href: project.websiteUrl, label: "Live site", icon: <FaLink /> });
+  }
+  if (project?.videoUrl) {
+    links.push({
+      href: project.videoUrl,
+      label: "Video walkthrough",
+      icon: <FaYoutube />,
+    });
+  }
+  return links;
+};
+
+const ProjectsPage = () => {
+  const [projects, setProjects] = useState<IProject[]>([]);
   const [queryParams, setQueryParams] = useState<{
     [key: string]: string | number | undefined;
   }>({
@@ -22,108 +51,58 @@ const Projects = ({}: {}) => {
     sortOrder: "desc",
   });
 
-  const fetchData = async () => {
-    const { data, isLoading } = await getData(
-      "/projects",
-      undefined,
-      [dataFetchingTags.projects],
-      { ...queryParams }
-    );
-    setProjects(data);
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await getData(
+        "/projects",
+        undefined,
+        [dataFetchingTags.projects],
+        { ...queryParams }
+      );
+      setProjects(data ?? []);
+    };
+
     fetchData();
   }, [queryParams]);
 
   return (
-    <div className="container mx-auto px-5 sm:px-10 md:px-0 xl:px-20 2xl:px-40 mt-10 lg:mt-20 mb-40">
-      <div className="flex flex-col lg:flex-row justify-between">
-        <SectionHeader title="Projects" classNames="mb-5 lg:mb-10" />
+    <div className="container mx-auto max-w-6xl px-5 py-16 sm:px-10 md:py-20">
+      <div className="mb-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <div>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-brand">
+            Projects
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            All projects
+          </h1>
+        </div>
         <Filterbar
-          classNames="w-full lg:w-1/2 mb-10 lg:mb-0"
+          classNames="lg:w-1/2"
           queryParams={queryParams}
           setQueryParams={setQueryParams}
-          options={[
-            { label: "All", value: "" },
-            { label: "Fullstack", value: "fullstack" },
-            { label: "Frontend", value: "frontend" },
-          ]}
+          options={CATEGORY_OPTIONS}
           filterKey="category"
           defaultSelectValue={(queryParams?.category as string) || ""}
         />
       </div>
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects?.map((project: any) => (
-            <div className="bg-secondaryBg rounded-lg p-4" key={project?.id}>
-              <div className="flex justify-end gap-x-4 text-2xl mb-3">
-                {project?.githubUrl && (
-                  <Tooltip title="Github">
-                    <Link
-                      aria-label="Redirect to project's github repository"
-                      href={project?.githubUrl}
-                      target="_blank"
-                    >
-                      <FaGithub />
-                    </Link>
-                  </Tooltip>
-                )}
-                {project?.videoUrl && (
-                  <Tooltip title="Youtube">
-                    <Link
-                      aria-label="Redirect to project's video"
-                      href={project?.videoUrl}
-                      target="_blank"
-                    >
-                      <FaYoutube />
-                    </Link>
-                  </Tooltip>
-                )}
-                {project?.websiteUrl && (
-                  <Tooltip title="Live Url">
-                    <Link
-                      aria-label="Redirect to project's live site"
-                      href={project?.websiteUrl}
-                      target="_blank"
-                    >
-                      <FaLink />
-                    </Link>
-                  </Tooltip>
-                )}
-              </div>
-              <div className="h-[150px] overflow-hidden group">
-                <div className="relative h-[800px] w-full origin-top group-hover:-translate-y-[80%] transition-all duration-[2000ms]">
-                  <Image
-                    alt="project"
-                    layout="fill"
-                    objectFit="fill"
-                    src={project?.photoUrl}
-                  />
-                </div>
-              </div>
-              <h2 className="text-primaryText text-xl my-3 font-semibold">
-                {project?.title}
-              </h2>
-              <p className="font-medium mb-8 text-lightText">
-                {project?.description}
-              </p>
-              <p className="text-secondaryText font-bold text-sm flex">
-                {project?.technologies?.map((item: ISkill, index: number) => (
-                  <span key={item.id + index} className="flex">
-                    {item.name}{" "}
-                    {index !== project?.technologies?.length - 1 && (
-                      <span className="mx-1">|</span>
-                    )}
-                  </span>
-                ))}
-              </p>
-            </div>
-          ))}
-        </div>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.map((project) => (
+          <ContentCard
+            key={project.id}
+            title={project.title}
+            imageUrl={project.photoUrl}
+            imageAlt={`${project.title} preview`}
+            featured={project.isFeatured}
+            roleLabel={project.role}
+            description={project.outcome || project.description}
+            tags={project.technologies?.map((skill) => skill.name)}
+            links={buildProjectLinks(project)}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
-export default Projects;
+export default ProjectsPage;

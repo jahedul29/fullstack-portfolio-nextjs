@@ -1,16 +1,21 @@
 "use client";
 
-import { FaArrowUp } from "react-icons/fa";
-import CommonButton from "../CommonButton";
+import { ArrowUp } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 const GotoTopButton = () => {
   return (
-    <CommonButton
-      classNames="fixed bottom-6 md:bottom-12 right-6 md:right-12 z-40 text-lg md:text-xl"
-      content={<FaArrowUp />}
+    <Button
+      size="icon"
+      variant="outline"
+      className="fixed bottom-6 right-6 z-40 rounded-full border-border bg-card text-foreground shadow-md hover:border-brand hover:text-brand md:bottom-12 md:right-12"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      aria-label="Go to Top"
-    />
+      aria-label="Go to top"
+      title="Go to top"
+    >
+      <ArrowUp className="h-5 w-5" />
+    </Button>
   );
 };
 
