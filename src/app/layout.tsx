@@ -79,12 +79,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Providers>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <html lang="en" suppressHydrationWarning>
-          <body className={inter.className}>{children}</body>
-        </html>
-      </ThemeProvider>
-    </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <Providers>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            {children}
+          </ThemeProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }
