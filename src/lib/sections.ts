@@ -22,22 +22,25 @@ export const normalizeSections = (raw: unknown): Section[] => {
   }
 
   if (Array.isArray(raw)) {
-    const known = raw
+    const known = new Map<string, Section>();
+    raw
       .filter(
         (item): item is { key: unknown; visible?: unknown } =>
           isPlainObject(item) && isKnownKey(item.key)
       )
-      .map((item) => ({
-        key: item.key as string,
-        visible: item.visible !== false,
-      }));
+      .forEach((item) => {
+        const key = item.key as string;
+        if (!known.has(key)) {
+          known.set(key, { key, visible: item.visible !== false });
+        }
+      });
 
-    const presentKeys = new Set(known.map((section) => section.key));
+    const presentKeys = new Set(known.keys());
     const missing = SECTION_KEYS.filter((key) => !presentKeys.has(key)).map(
       (key) => ({ key, visible: true })
     );
 
-    return [...known, ...missing];
+    return [...known.values(), ...missing];
   }
 
   if (isPlainObject(raw)) {

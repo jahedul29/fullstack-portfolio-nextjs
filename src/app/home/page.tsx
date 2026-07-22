@@ -10,6 +10,7 @@ import Skills from "@/components/user/home/skills/Skills";
 import dataFetchingTags from "@/constants/dataFetchingTags";
 import { getData } from "@/helpers/data-fetching/data-fetching";
 import { normalizeSections } from "@/lib/sections";
+import { SectionKey } from "@/server/modules/owner/owner.constant";
 import { Fragment, ReactNode } from "react";
 
 type HomeSectionContext = {
@@ -22,7 +23,7 @@ type HomeSectionContext = {
 };
 
 const SECTION_COMPONENTS: Record<
-  string,
+  SectionKey,
   (ctx: HomeSectionContext) => ReactNode
 > = {
   about: ({ ownerData }) => <AboutMe ownerData={ownerData} id="aboutMe" />,
@@ -114,7 +115,9 @@ const Home = async () => {
         .filter((section) => section.visible)
         .map((section) => (
           <Fragment key={section.key}>
-            {SECTION_COMPONENTS[section.key]?.(ctx)}
+            {section.key in SECTION_COMPONENTS
+              ? SECTION_COMPONENTS[section.key as SectionKey](ctx)
+              : null}
           </Fragment>
         ))}
     </div>
