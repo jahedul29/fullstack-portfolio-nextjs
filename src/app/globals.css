@@ -2,24 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ------------------------------------------------------------------ */
-/* Landing globals (carried over verbatim from the old client)         */
-/* ------------------------------------------------------------------ */
-:root {
-  background-color: white;
-  width: 100vw;
-  padding: 0px;
-  margin: 0px;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  font-family: "Roboto Condensed", sans-serif;
-  position: relative;
-  font-display: swap;
-}
-
-/* ------------------------------------------------------------------ */
-/* shadcn/ui theme tokens (admin only — scoped via CSS vars)           */
-/* ------------------------------------------------------------------ */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -68,6 +50,14 @@
     --ring: 212.7 26.8% 83.9%;
     --brand: 172.5 66% 50.4%;
     --brand-foreground: 171.7 82.9% 6.9%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }
 

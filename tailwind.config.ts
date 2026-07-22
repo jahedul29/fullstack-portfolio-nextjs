@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  // "class" toggles shadcn/admin dark theme (via next-themes). Landing is unaffected.
   darkMode: ["class"],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -21,15 +20,7 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        // ---- Landing palette (unchanged) ----
-        primaryBg: "#10273a",
-        secondaryBg: "#172a45",
-        primaryText: "#fff",
-        secondaryText: "#6c757d",
-        ternaryText: "#41a796",
-        lightText: "#a6adba",
-        darkText: "#000000",
-        // ---- shadcn/ui tokens (admin) ----
+        // ---- shadcn/ui tokens ----
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -89,7 +80,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("daisyui"), require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate")],
 };
 
 export default config;

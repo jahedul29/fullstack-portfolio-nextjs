@@ -20,7 +20,7 @@ const UserLayout = async ({ children }: { children: ReactNode }) => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="w-screen min-h-screen bg-primaryBg relative">
+      <div className="w-screen min-h-screen bg-background relative">
         <FloatingLinks />
         <GotoTopButton />
         <UserNavbar
