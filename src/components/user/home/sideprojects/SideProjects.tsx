@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { FaGithub, FaLink, FaYoutube } from "react-icons/fa";
 
+import { Button } from "@/components/ui/button";
 import ContentCard, {
   ContentCardLink,
 } from "@/components/user/home/ContentCard";
@@ -58,14 +60,18 @@ const SideProjects = ({
             title={project.title}
             imageUrl={project.photoUrl}
             imageAlt={`${project.title} preview`}
-            featured={project.isFeatured}
             roleLabel={project.role}
-            typeBadge={{ label: "Side project", tone: "muted" }}
             description={project.outcome || project.description}
             tags={orderByPosition(project.technologies).map((skill) => skill.name)}
             links={buildProjectLinks(project)}
           />
         ))}
+      </div>
+
+      <div className="mt-12 flex justify-center">
+        <Button variant="outline" size="lg" asChild>
+          <Link href="/projects?type=personal">See all side projects</Link>
+        </Button>
       </div>
     </Section>
   );

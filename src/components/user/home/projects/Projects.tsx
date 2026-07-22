@@ -45,9 +45,9 @@ const Projects = ({
   return (
     <Section
       id={id}
-      eyebrow="Projects"
-      title="Selected work"
-      subtitle="Each card leads with the role and the outcome, not a screenshot dump."
+      eyebrow="Work"
+      title="Professional Work"
+      subtitle="Selected production applications I've designed, built, and shipped."
     >
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {professionalProjects?.map((project) => (
@@ -56,9 +56,7 @@ const Projects = ({
             title={project.title}
             imageUrl={project.photoUrl}
             imageAlt={`${project.title} preview`}
-            featured={project.isFeatured}
             roleLabel={project.role}
-            typeBadge={{ label: "Professional", tone: "brand" }}
             description={project.outcome || project.description}
             tags={orderByPosition(project.technologies).map((skill) => skill.name)}
             links={buildProjectLinks(project)}
@@ -68,7 +66,7 @@ const Projects = ({
 
       <div className="mt-12 flex justify-center">
         <Button variant="outline" size="lg" asChild>
-          <Link href="/projects">See all projects</Link>
+          <Link href="/projects?type=professional">See all projects</Link>
         </Button>
       </div>
     </Section>
