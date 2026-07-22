@@ -1,6 +1,25 @@
-import SectionHeader from "@/components/common/User/SectionHeader";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import Section from "@/components/user/home/Section";
 import { IExperience, ISkill } from "@/types";
-import moment from "moment";
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric",
+});
+
+const formatDate = (value?: string) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return dateFormatter.format(date);
+};
+
+const formatRange = (startTime?: string, endTime?: string) => {
+  const start = formatDate(startTime);
+  const end = endTime ? formatDate(endTime) : "Present";
+  return [start, end].filter(Boolean).join(" — ");
+};
 
 const Experience = ({
   experiences,
@@ -10,51 +29,91 @@ const Experience = ({
   id?: string;
 }) => {
   return (
-    <section
-      className="container mx-auto px-5 sm:px-10 md:px-0 xl:px-20 2xl:px-40 mt-40 mb-40"
+    <Section
       id={id}
+      eyebrow="Experience"
+      title="Where I've had impact"
+      subtitle="Roles framed by outcomes and scope — not just a tech list."
+      muted
     >
-      <SectionHeader title="Professional Experience" />
-      <div className="px-0 lg:px-60 mx-auto">
-        {experiences?.map((experience: IExperience) => (
-          <div
-            key={experience.id}
-            className="flex flex-col sm:flex-row justify-center gap-x-6 items-stretch"
-          >
-            <div className="flex flex-col items-start sm:items-end text-sm text-secondaryText font-semibold w-full sm:w-[30%] mb-2 sm:mb-0">
-              <p className="text-right">
-                {moment(experience?.startTime).format("MMM, YYYY")} -{" "}
-                {experience?.endTime
-                  ? moment(experience?.endTime).format("MMM, YYYY")
-                  : "Present"}
-              </p>
-              <p className="text-base text-right">{experience.position}</p>
-            </div>
-            <div className="w-[1px] h-auto bg-ternaryText"></div>
-            <div className="w-full sm:w-[69%] mb-6">
-              <p className="text-2xl text-primaryText font-bold">
-                {experience?.companyName}
-              </p>
-              <p className="mb-4 mt-2 text-base text-secondaryText font-medium">
-                {experience?.description}
-              </p>
-              <div className=" flex gap-2 flex-wrap">
-                {experience?.technologies.map(
-                  (skill: ISkill, index: number) => (
-                    <p
-                      key={skill.id + index}
-                      className="rounded-lg px-2 py-1 bg-ternaryText text-secondaryBg text-sm font-semibold"
-                    >
-                      {skill?.name}
-                    </p>
-                  )
-                )}
+      <div className="flex flex-col gap-5">
+        {experiences?.map((experience) => {
+          const scopeParts = [
+            experience.role,
+            experience.teamSize ? `Team of ${experience.teamSize}` : undefined,
+          ].filter(Boolean);
+
+          return (
+            <div
+              key={experience.id}
+              className="grid gap-3 sm:grid-cols-[150px_1fr] sm:gap-6"
+            >
+              <div className="text-sm text-muted-foreground sm:pt-1 sm:text-right">
+                <p>{formatRange(experience.startTime, experience.endTime)}</p>
+                <p className="mt-1 text-foreground">{experience.companyName}</p>
               </div>
+
+              <Card className="p-6">
+                <h3 className="text-lg font-bold text-foreground">
+                  {experience.position}
+                </h3>
+                <p className="mt-1 text-sm font-semibold text-brand">
+                  {experience.companyName}
+                  {scopeParts.length > 0 ? ` · ${scopeParts.join(" · ")}` : ""}
+                </p>
+
+                {experience.description && (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    {experience.description}
+                  </p>
+                )}
+
+                {experience.impact && experience.impact.length > 0 && (
+                  <ul className="mt-3 space-y-1.5">
+                    {experience.impact.map((line, index) => (
+                      <li
+                        key={index}
+                        className="relative pl-4 text-sm text-muted-foreground before:absolute before:left-0 before:text-brand before:content-['▸']"
+                      >
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {experience.metrics && experience.metrics.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2.5">
+                    {experience.metrics.map((metric, index) => (
+                      <div
+                        key={index}
+                        className="rounded-lg border border-border bg-muted/40 px-3 py-2"
+                      >
+                        <div className="text-base font-extrabold text-brand">
+                          {metric.value}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {metric.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {experience.technologies && experience.technologies.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {experience.technologies.map((skill: ISkill, index: number) => (
+                      <Badge key={(skill._id || skill.id) + index} variant="secondary">
+                        {skill.name}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </Card>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-    </section>
+    </Section>
   );
 };
 

@@ -1,35 +1,67 @@
-import SectionHeader from "@/components/common/User/SectionHeader";
+import Section from "@/components/user/home/Section";
+import { IOwner } from "@/types";
 import Image from "next/image";
 
-const AboutMe = ({ ownerData, id = "" }: { ownerData: any; id?: string }) => {
-  const aboutMe = ownerData?.aboutOwner.split("\n");
+type QuickFact = {
+  label: string;
+  value?: string;
+};
+
+const AboutMe = ({
+  ownerData,
+  id = "",
+}: {
+  ownerData: IOwner;
+  id?: string;
+}) => {
+  const paragraphs =
+    ownerData?.aboutOwner?.split("\n").filter((line) => line.trim().length > 0) ??
+    [];
+
+  const quickFacts: QuickFact[] = [
+    { label: "Location", value: ownerData?.address },
+    { label: "Focus", value: ownerData?.designation },
+  ].filter((fact) => Boolean(fact.value));
 
   return (
-    <section
-      className="container mx-auto px-5 sm:px-10 md:px-0 xl:px-20 2xl:px-40 mt-40 mb-40"
-      id={id}
-    >
-      <SectionHeader title="About Me" />
-      <div className="flex flex-col-reverse md:flex-row items-center md:items-start justify-between gap-y-10 md:gap-y-0 gap-x-0 md:gap-x-20 text-lightText">
-        <div className="w-full md:w-1/2">
-          {aboutMe?.map((item: string) => (
-            <p className="mb-3 text-lg" key={item}>
-              {item}
+    <Section id={id} eyebrow="About" title="A bit about me">
+      <div className="grid gap-11 md:grid-cols-[1.4fr_0.9fr] md:items-start">
+        <div className="space-y-4">
+          {paragraphs.map((paragraph, index) => (
+            <p key={index} className="text-muted-foreground">
+              {paragraph}
             </p>
           ))}
         </div>
-        <div className="">
-          <div className="w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] relative overflow-hidden rounded-xl">
-            <Image
-              alt={`${ownerData?.name} portrait`}
-              fill={true}
-              src={ownerData?.photoUrl}
-              className=" object-contain transition-all duration-1000 scale-100 hover:scale-125"
-            />
-          </div>
+
+        <div>
+          {ownerData?.photoUrl && (
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-muted/40">
+              <Image
+                alt={`${ownerData?.name} portrait`}
+                src={ownerData.photoUrl}
+                fill
+                sizes="(min-width: 768px) 320px, 100vw"
+                className="object-cover"
+              />
+            </div>
+          )}
+
+          {quickFacts.length > 0 && (
+            <div className="mt-5 flex flex-col gap-2.5">
+              {quickFacts.map((fact) => (
+                <div key={fact.label} className="flex gap-3 text-sm">
+                  <span className="min-w-[84px] font-semibold text-brand">
+                    {fact.label}
+                  </span>
+                  <span className="text-muted-foreground">{fact.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 
