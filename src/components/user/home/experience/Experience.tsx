@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import Section from "@/components/user/home/Section";
+import { orderByPosition } from "@/lib/sort-skills";
 import { IExperience, ISkill } from "@/types";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -101,7 +102,7 @@ const Experience = ({
 
                 {experience.technologies && experience.technologies.length > 0 && (
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {experience.technologies.map((skill: ISkill, index: number) => (
+                    {orderByPosition(experience.technologies).map((skill: ISkill, index: number) => (
                       <Badge key={(skill._id || skill.id) + index} variant="secondary">
                         {skill.name}
                       </Badge>

@@ -9,6 +9,7 @@ import ContentCard, {
 } from "@/components/user/home/ContentCard";
 import dataFetchingTags from "@/constants/dataFetchingTags";
 import { getData } from "@/helpers/data-fetching/data-fetching";
+import { orderByPosition } from "@/lib/sort-skills";
 import { IProject } from "@/types";
 
 const CATEGORY_OPTIONS = [
@@ -96,7 +97,7 @@ const ProjectsPage = () => {
             featured={project.isFeatured}
             roleLabel={project.role}
             description={project.outcome || project.description}
-            tags={project.technologies?.map((skill) => skill.name)}
+            tags={orderByPosition(project.technologies).map((skill) => skill.name)}
             links={buildProjectLinks(project)}
           />
         ))}

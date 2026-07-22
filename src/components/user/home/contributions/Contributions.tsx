@@ -4,6 +4,7 @@ import ContentCard, {
   ContentCardLink,
 } from "@/components/user/home/ContentCard";
 import Section from "@/components/user/home/Section";
+import { orderByPosition } from "@/lib/sort-skills";
 import { IContribution } from "@/types";
 
 const buildContributionLinks = (
@@ -51,7 +52,7 @@ const Contributions = ({
             imageAlt={`${contribution.title} preview`}
             eyebrow={contribution.contributionFor}
             description={contribution.description}
-            tags={contribution.technologies?.map((skill) => skill.name)}
+            tags={orderByPosition(contribution.technologies).map((skill) => skill.name)}
             links={buildContributionLinks(contribution)}
           />
         ))}

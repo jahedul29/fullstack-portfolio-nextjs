@@ -6,6 +6,7 @@ import ContentCard, {
   ContentCardLink,
 } from "@/components/user/home/ContentCard";
 import Section from "@/components/user/home/Section";
+import { orderByPosition } from "@/lib/sort-skills";
 import { IProject } from "@/types";
 
 const buildProjectLinks = (project: IProject): ContentCardLink[] => {
@@ -54,7 +55,7 @@ const Projects = ({
             featured={project.isFeatured}
             roleLabel={project.role}
             description={project.outcome || project.description}
-            tags={project.technologies?.map((skill) => skill.name)}
+            tags={orderByPosition(project.technologies).map((skill) => skill.name)}
             links={buildProjectLinks(project)}
           />
         ))}
