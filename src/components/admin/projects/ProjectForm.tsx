@@ -30,7 +30,6 @@ import {
   projectCategories,
   projectTypes,
 } from "@/server/modules/project/project.constant";
-import { useGetSkillsQuery } from "@/redux/api/skillApi";
 import {
   useCreateProjectMutation,
   useUpdateProjectMutation,
@@ -38,6 +37,7 @@ import {
 import { IProject } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { SkillMultiSelect } from "@/components/admin/SkillMultiSelect";
 
 const projectFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -73,7 +73,6 @@ type ProjectFormProps = {
 
 export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
   const isEditing = !!project;
-  const { data: skillsData } = useGetSkillsQuery({ page: 1, limit: 100 });
   const [createProject, { isLoading: isCreating }] =
     useCreateProjectMutation();
   const [updateProject, { isLoading: isUpdating }] =
@@ -119,7 +118,6 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
     }
   };
 
-  const skills = skillsData?.data ?? [];
   const isSubmitting = isCreating || isUpdating;
 
   return (
@@ -343,47 +341,18 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
         <FormField
           control={form.control}
           name="technologies"
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Technologies</FormLabel>
               <FormDescription>
                 Select the skills used in this project.
               </FormDescription>
-              <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border border-border p-3">
-                {skills.length === 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    No skills yet — add some on the Skills page first.
-                  </p>
-                )}
-                {skills.map((skill) => (
-                  <FormField
-                    key={skill.id}
-                    control={form.control}
-                    name="technologies"
-                    render={({ field }) => {
-                      const checked = field.value?.includes(skill.id);
-                      return (
-                        <label className="flex cursor-pointer items-center gap-2 text-sm">
-                          <input
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-input"
-                            checked={checked}
-                            onChange={(event) => {
-                              const next = event.target.checked
-                                ? [...(field.value ?? []), skill.id]
-                                : (field.value ?? []).filter(
-                                    (value) => value !== skill.id
-                                  );
-                              field.onChange(next);
-                            }}
-                          />
-                          {skill.name}
-                        </label>
-                      );
-                    }}
-                  />
-                ))}
-              </div>
+              <FormControl>
+                <SkillMultiSelect
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
