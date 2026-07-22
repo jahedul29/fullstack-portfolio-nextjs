@@ -77,21 +77,29 @@ const Skills = ({
       id={id}
       eyebrow="Skills"
       title="Tools I reach for"
-      subtitle="Grouped by area — no self-rated percentage bars."
+      subtitle="The tools and technologies I work with, grouped by area."
       muted
     >
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => (
-          <div key={group.category}>
-            <h3 className="mb-3 text-sm font-semibold text-foreground">
-              {group.category}
-            </h3>
+          <div
+            key={group.category}
+            className="rounded-xl border border-border bg-card p-5"
+          >
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-foreground">
+                {group.category}
+              </h3>
+              <span className="text-xs font-medium text-muted-foreground">
+                {group.items.length}
+              </span>
+            </div>
             <div className="flex flex-wrap gap-2">
               {group.items.map((skill) => (
                 <Badge
                   key={skill._id || skill.id}
                   variant="outline"
-                  className="border-border bg-card text-muted-foreground"
+                  className="border-brand/20 bg-brand/10 font-medium text-brand"
                 >
                   {skill.name}
                 </Badge>
