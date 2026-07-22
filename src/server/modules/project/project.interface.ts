@@ -3,6 +3,8 @@ import { Types } from "mongoose";
 
 export type IProjectCategory = "frontend" | "fullstack" | "backend";
 
+export type IProjectType = "professional" | "personal";
+
 export type IProject = {
   title: string;
   category: IProjectCategory;
@@ -16,6 +18,7 @@ export type IProject = {
   priorityScore: number;
   outcome?: string;
   role?: string;
+  type?: IProjectType;
 };
 
 export type IProjectMethods = object;
@@ -25,4 +28,5 @@ export type IProjectFilters = {
   id?: string;
   category?: IProjectCategory;
   isFeatured?: boolean;
+  type?: IProjectType;
 };

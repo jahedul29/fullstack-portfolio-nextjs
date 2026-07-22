@@ -26,7 +26,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { projectCategories } from "@/server/modules/project/project.constant";
+import {
+  projectCategories,
+  projectTypes,
+} from "@/server/modules/project/project.constant";
 import { useGetSkillsQuery } from "@/redux/api/skillApi";
 import {
   useCreateProjectMutation,
@@ -53,9 +56,15 @@ const projectFormSchema = z.object({
   technologies: z.array(z.string()).min(1, "Select at least one technology"),
   outcome: z.string().optional(),
   role: z.string().optional(),
+  type: z.enum(projectTypes as [string, ...string[]]).optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
+
+const PROJECT_TYPE_LABELS: Record<string, string> = {
+  professional: "Professional",
+  personal: "Side project",
+};
 
 type ProjectFormProps = {
   project?: IProject | null;
@@ -85,6 +94,7 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
       technologies: project?.technologies?.map((t) => t.id) ?? [],
       outcome: project?.outcome ?? "",
       role: project?.role ?? "",
+      type: (project?.type as ProjectFormValues["type"]) ?? "professional",
     },
   });
 
@@ -149,6 +159,35 @@ export function ProjectForm({ project, onSuccess }: ProjectFormProps) {
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {projectTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {PROJECT_TYPE_LABELS[type] ?? type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Professional projects show in the main Projects section; side
+                projects show in the Side Projects section.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

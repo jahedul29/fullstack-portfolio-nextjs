@@ -1,6 +1,7 @@
 export const SECTION_KEYS = [
   "about",
   "projects",
+  "sideProjects",
   "contributions",
   "experience",
   "blogs",
@@ -18,6 +19,7 @@ export type Section = {
 export const SECTION_LABELS: Record<SectionKey, string> = {
   about: "About",
   projects: "Projects",
+  sideProjects: "Side Projects",
   contributions: "Contributions",
   experience: "Experience",
   blogs: "Blogs",

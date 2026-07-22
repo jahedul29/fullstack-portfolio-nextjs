@@ -12,6 +12,11 @@ export type ContentCardLink = {
   icon: ReactNode;
 };
 
+export type ContentCardTypeBadge = {
+  label: string;
+  tone: "brand" | "muted";
+};
+
 type ContentCardProps = {
   title: string;
   imageUrl?: string;
@@ -19,6 +24,7 @@ type ContentCardProps = {
   eyebrow?: string;
   roleLabel?: string;
   featured?: boolean;
+  typeBadge?: ContentCardTypeBadge;
   description?: string;
   tags?: string[];
   links?: ContentCardLink[];
@@ -34,6 +40,7 @@ const ContentCard = ({
   eyebrow,
   roleLabel,
   featured = false,
+  typeBadge,
   description,
   tags,
   links,
@@ -67,6 +74,18 @@ const ContentCard = ({
       </div>
 
       <CardContent className="flex flex-1 flex-col p-6">
+        {typeBadge && (
+          <Badge
+            variant={typeBadge.tone === "brand" ? "outline" : "secondary"}
+            className={cn(
+              "mb-2 w-fit",
+              typeBadge.tone === "brand" && "border-brand text-brand"
+            )}
+          >
+            {typeBadge.label}
+          </Badge>
+        )}
+
         {eyebrow && (
           <p className="mb-1 text-xs font-semibold uppercase tracking-[0.08em] text-brand">
             {eyebrow}

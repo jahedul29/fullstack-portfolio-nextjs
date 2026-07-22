@@ -1,5 +1,5 @@
 import mongoose, { Model, Schema } from "mongoose";
-import { projectCategories } from "./project.constant";
+import { projectCategories, projectTypes } from "./project.constant";
 import { IProject } from "./project.interface";
 
 const projectSchema = new Schema<IProject>(
@@ -52,6 +52,11 @@ const projectSchema = new Schema<IProject>(
     },
     role: {
       type: String,
+    },
+    type: {
+      type: String,
+      enum: projectTypes,
+      default: "professional",
     },
   },
   {

@@ -62,6 +62,7 @@ export type IProject = {
   priorityScore: number;
   outcome?: string;
   role?: string;
+  type?: "professional" | "personal";
   createdAt: string;
   updatedAt: string;
   __v: number;

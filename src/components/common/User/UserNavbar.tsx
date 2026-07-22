@@ -26,6 +26,7 @@ const NAV_ITEMS: Record<string, { id: string; title: string }> = {
   about: { id: "aboutMe", title: "About" },
   experience: { id: "experiences", title: "Experience" },
   projects: { id: "projects", title: "Projects" },
+  sideProjects: { id: "side-projects", title: "Side Projects" },
   skills: { id: "skills", title: "Skills" },
   contributions: { id: "contributions", title: "Contributions" },
   blogs: { id: "blogs", title: "Blogs" },

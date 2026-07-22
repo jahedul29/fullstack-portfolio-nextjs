@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { projectCategories } from "./project.constant";
+import { projectCategories, projectTypes } from "./project.constant";
 
 const create = z.object({
   body: z.object({
@@ -32,6 +32,7 @@ const create = z.object({
     }),
     outcome: z.string().optional(),
     role: z.string().optional(),
+    type: z.enum(projectTypes as [string, ...string[]]).optional(),
   }),
 });
 
@@ -48,6 +49,7 @@ const update = z.object({
     technologies: z.array(z.string()).optional(),
     outcome: z.string().optional(),
     role: z.string().optional(),
+    type: z.enum(projectTypes as [string, ...string[]]).optional(),
   }),
 });
 

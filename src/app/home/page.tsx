@@ -6,6 +6,7 @@ import Experience from "@/components/user/home/experience/Experience";
 import GetInTouch from "@/components/user/home/getintouch/GetInTouch";
 import Header from "@/components/user/home/header/Header";
 import Projects from "@/components/user/home/projects/Projects";
+import SideProjects from "@/components/user/home/sideprojects/SideProjects";
 import Skills from "@/components/user/home/skills/Skills";
 import dataFetchingTags from "@/constants/dataFetchingTags";
 import { getData } from "@/helpers/data-fetching/data-fetching";
@@ -16,6 +17,7 @@ import { Fragment, ReactNode } from "react";
 type HomeSectionContext = {
   ownerData: any;
   projects: any;
+  personalProjects: any;
   experiences: any;
   blogs: any;
   skills: any;
@@ -28,6 +30,9 @@ const SECTION_COMPONENTS: Record<
 > = {
   about: ({ ownerData }) => <AboutMe ownerData={ownerData} id="aboutMe" />,
   projects: ({ projects }) => <Projects projects={projects} id="projects" />,
+  sideProjects: ({ personalProjects }) => (
+    <SideProjects projects={personalProjects} id="side-projects" />
+  ),
   contributions: ({ contributions }) => (
     <Contributions contributions={contributions} id="contributions" />
   ),
@@ -64,6 +69,13 @@ const Home = async () => {
       sortOrder: "desc",
     }
   );
+  const { data: personalProjects, isLoading: isPersonalProjectDataLoading } =
+    await getData("/projects", undefined, [dataFetchingTags.projects], {
+      type: "personal",
+      limit: 6,
+      sortBy: "priorityScore",
+      sortOrder: "desc",
+    });
   const { data: skills, isLoading: isSkillLoading } = await getData(
     "/skills",
     undefined,
@@ -102,6 +114,7 @@ const Home = async () => {
   const ctx: HomeSectionContext = {
     ownerData,
     projects,
+    personalProjects,
     experiences,
     blogs,
     skills,
