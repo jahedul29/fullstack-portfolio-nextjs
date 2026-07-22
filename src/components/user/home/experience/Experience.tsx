@@ -51,17 +51,20 @@ const Experience = ({
             >
               <div className="text-sm text-muted-foreground sm:pt-1 sm:text-right">
                 <p>{formatRange(experience.startTime, experience.endTime)}</p>
-                <p className="mt-1 text-foreground">{experience.companyName}</p>
+                <p className="mt-1 font-semibold text-brand">
+                  {experience.companyName}
+                </p>
               </div>
 
               <Card className="p-6">
                 <h3 className="text-lg font-bold text-foreground">
                   {experience.position}
                 </h3>
-                <p className="mt-1 text-sm font-semibold text-brand">
-                  {experience.companyName}
-                  {scopeParts.length > 0 ? ` · ${scopeParts.join(" · ")}` : ""}
-                </p>
+                {scopeParts.length > 0 && (
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {scopeParts.join(" · ")}
+                  </p>
+                )}
 
                 {experience.description && (
                   <p className="mt-3 text-sm text-muted-foreground">
