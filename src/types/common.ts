@@ -32,6 +32,16 @@ export type ISkill = {
   id: string;
 };
 
+export type ISkillCategory = {
+  _id: string;
+  name: string;
+  position?: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  id: string;
+};
+
 export type IBlog = {
   _id: string;
   title: string;

@@ -17,11 +17,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   useCreateSkillMutation,
   useUpdateSkillMutation,
 } from "@/redux/api/skillApi";
+import { useGetSkillCategoriesQuery } from "@/redux/api/skillCategoryApi";
 import { ISkill } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
+
+const UNCATEGORIZED_VALUE = "__none__";
+const FETCH_ALL_LIMIT = 200;
 
 const skillFormSchema = z.object({
   name: z.string().min(1, "Skill name is required"),
@@ -43,6 +54,9 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
   const isEditing = !!skill;
   const [createSkill, { isLoading: isCreating }] = useCreateSkillMutation();
   const [updateSkill, { isLoading: isUpdating }] = useUpdateSkillMutation();
+  const { data: categoriesData, isLoading: isLoadingCategories } =
+    useGetSkillCategoriesQuery({ limit: FETCH_ALL_LIMIT });
+  const categories = categoriesData?.data ?? [];
 
   const form = useForm<SkillFormValues>({
     resolver: zodResolver(skillFormSchema),
@@ -108,9 +122,33 @@ export function SkillForm({ skill, onSuccess }: SkillFormProps) {
                 Category{" "}
                 <span className="text-muted-foreground">(optional)</span>
               </FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. Frontend, Backend, Infra" {...field} />
-              </FormControl>
+              <Select
+                onValueChange={(value) =>
+                  field.onChange(value === UNCATEGORIZED_VALUE ? "" : value)
+                }
+                value={field.value ? field.value : UNCATEGORIZED_VALUE}
+                disabled={!isLoadingCategories && categories.length === 0}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={
+                        isLoadingCategories
+                          ? "Loading categories…"
+                          : "No categories — add some first"
+                      }
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value={UNCATEGORIZED_VALUE}>None</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

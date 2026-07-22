@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import Section from "@/components/user/home/Section";
-import { ISkill } from "@/types";
+import { ISkill, ISkillCategory } from "@/types";
 
 type SkillGroup = {
   category: string;
@@ -9,32 +9,68 @@ type SkillGroup = {
 
 const OTHER_CATEGORY = "Other";
 
-const groupSkills = (skills: ISkill[]): SkillGroup[] => {
-  const groups = new Map<string, ISkill[]>();
+const sortByPosition = (skills: ISkill[]): ISkill[] =>
+  [...skills].sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0));
+
+const groupSkills = (
+  skills: ISkill[],
+  categories: ISkillCategory[]
+): SkillGroup[] => {
+  const bySkillCategoryName = new Map<string, ISkill[]>();
+  const otherSkills: ISkill[] = [];
 
   (skills || []).forEach((skill) => {
-    const category = skill?.category?.trim() || OTHER_CATEGORY;
-    const existing = groups.get(category) ?? [];
-    existing.push(skill);
-    groups.set(category, existing);
+    const category = skill?.category?.trim();
+    if (!category) {
+      otherSkills.push(skill);
+      return;
+    }
+    const existing = bySkillCategoryName.get(category);
+    if (existing) {
+      existing.push(skill);
+    } else {
+      bySkillCategoryName.set(category, [skill]);
+    }
   });
 
-  return Array.from(groups.entries())
-    .map(([category, items]) => ({
-      category,
-      items: [...items].sort(
-        (a, b) => (a?.position ?? 0) - (b?.position ?? 0)
-      ),
-    }))
-    .sort((a, b) => {
-      if (a.category === OTHER_CATEGORY) return 1;
-      if (b.category === OTHER_CATEGORY) return -1;
-      return a.category.localeCompare(b.category);
-    });
+  const orderedCategories = [...(categories || [])].sort(
+    (a, b) => (a?.position ?? 0) - (b?.position ?? 0)
+  );
+
+  const groups: SkillGroup[] = [];
+  const usedCategoryNames = new Set<string>();
+
+  orderedCategories.forEach((category) => {
+    const items = bySkillCategoryName.get(category.name);
+    if (items && items.length) {
+      groups.push({ category: category.name, items: sortByPosition(items) });
+      usedCategoryNames.add(category.name);
+    }
+  });
+
+  bySkillCategoryName.forEach((items, categoryName) => {
+    if (!usedCategoryNames.has(categoryName)) {
+      otherSkills.push(...items);
+    }
+  });
+
+  if (otherSkills.length) {
+    groups.push({ category: OTHER_CATEGORY, items: sortByPosition(otherSkills) });
+  }
+
+  return groups;
 };
 
-const Skills = ({ skills, id = "" }: { skills: ISkill[]; id?: string }) => {
-  const groups = groupSkills(skills);
+const Skills = ({
+  skills,
+  categories = [],
+  id = "",
+}: {
+  skills: ISkill[];
+  categories?: ISkillCategory[];
+  id?: string;
+}) => {
+  const groups = groupSkills(skills, categories);
 
   return (
     <Section

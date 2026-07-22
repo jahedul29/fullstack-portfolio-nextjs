@@ -21,6 +21,7 @@ type HomeSectionContext = {
   experiences: any;
   blogs: any;
   skills: any;
+  skillCategories: any;
   contributions: any;
 };
 
@@ -40,7 +41,9 @@ const SECTION_COMPONENTS: Record<
     <Experience experiences={experiences} id="experiences" />
   ),
   blogs: ({ blogs }) => <Blogs blogs={blogs} id="blogs" />,
-  skills: ({ skills }) => <Skills skills={skills} id="skills" />,
+  skills: ({ skills, skillCategories }) => (
+    <Skills skills={skills} categories={skillCategories} id="skills" />
+  ),
   contact: ({ ownerData }) => (
     <GetInTouch ownerData={ownerData} id="contact" />
   ),
@@ -82,6 +85,13 @@ const Home = async () => {
     [dataFetchingTags.skills],
     { limit: 200 }
   );
+  const { data: skillCategories, isLoading: isSkillCategoriesLoading } =
+    await getData(
+      "/skill-categories",
+      undefined,
+      [dataFetchingTags.skillCategories],
+      { limit: 200 }
+    );
   const { data: blogs, isLoading: isBlogsLoading } = await getData(
     "/blogs",
     undefined,
@@ -119,6 +129,7 @@ const Home = async () => {
     experiences,
     blogs,
     skills,
+    skillCategories,
     contributions,
   };
 
