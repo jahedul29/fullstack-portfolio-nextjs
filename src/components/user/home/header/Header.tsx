@@ -25,7 +25,7 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
     ownerData?.aboutOwner?.split("\n")[0]?.trim();
 
   const topSkills = [...(skills || [])]
-    .sort((a, b) => (b?.level ?? 0) - (a?.level ?? 0))
+    .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0))
     .slice(0, 6);
 
   const categoryCount = new Set(

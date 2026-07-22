@@ -22,7 +22,9 @@ const groupSkills = (skills: ISkill[]): SkillGroup[] => {
   return Array.from(groups.entries())
     .map(([category, items]) => ({
       category,
-      items: [...items].sort((a, b) => (b?.level ?? 0) - (a?.level ?? 0)),
+      items: [...items].sort(
+        (a, b) => (a?.position ?? 0) - (b?.position ?? 0)
+      ),
     }))
     .sort((a, b) => {
       if (a.category === OTHER_CATEGORY) return 1;

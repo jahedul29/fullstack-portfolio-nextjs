@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import { SortOrder } from "mongoose";
+import { SortOrder, Types } from "mongoose";
 import { calculatePagination } from "@/server/lib/pagination";
 import { ApiError } from "@/server/lib/ApiError";
 import { IPaginationParams } from "@/server/lib/interfaces";
@@ -8,7 +8,13 @@ import { ISkill, ISkillFilters } from "./skill.interface";
 import { Skill } from "./skill.model";
 
 const create = async (skill: ISkill): Promise<ISkill | null> => {
-  const savedSkill = (await Skill.create(skill)).toObject();
+  const skillData = { ...skill };
+
+  if (skillData.position === undefined || skillData.position === null) {
+    skillData.position = await Skill.countDocuments();
+  }
+
+  const savedSkill = (await Skill.create(skillData)).toObject();
   return savedSkill;
 };
 
@@ -43,8 +49,11 @@ const findAll = async (
     calculatePagination(paginationParams);
 
   const sortCondition: { [key: string]: SortOrder } = {};
-  if (sortBy && sortBy) {
+  if (paginationParams?.sortBy) {
     sortCondition[sortBy] = sortOrder;
+  } else {
+    sortCondition.position = 1;
+    sortCondition.createdAt = 1;
   }
 
   const { searchTerm, ...filterData } = filters;
@@ -105,10 +114,28 @@ const deleteOne = async (id: string): Promise<ISkill | null> => {
   return savedSkill;
 };
 
+const reorder = async (ids: string[]): Promise<ISkill[]> => {
+  await Skill.bulkWrite(
+    ids.map((id, index) => ({
+      updateOne: {
+        filter: { _id: new Types.ObjectId(id) },
+        update: { $set: { position: index } },
+      },
+    }))
+  );
+
+  const reorderedSkills = await Skill.find({ _id: { $in: ids } }).sort({
+    position: 1,
+  });
+
+  return reorderedSkills;
+};
+
 export const SkillService = {
   create,
   update,
   findAll,
   findOne,
   deleteOne,
+  reorder,
 };

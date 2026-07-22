@@ -62,6 +62,14 @@ const skillApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.skill],
     }),
+    reorderSkills: build.mutation<ISkill[], { ids: string[] }>({
+      query: ({ ids }) => ({
+        url: `${SKILL_URL}/reorder`,
+        method: "PATCH",
+        data: { ids },
+      }),
+      invalidatesTags: [tagTypes.skill],
+    }),
   }),
   overrideExisting: false,
 });
@@ -72,4 +80,5 @@ export const {
   useCreateSkillMutation,
   useUpdateSkillMutation,
   useDeleteSkillMutation,
+  useReorderSkillsMutation,
 } = skillApi;

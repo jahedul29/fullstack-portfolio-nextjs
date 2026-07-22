@@ -25,6 +25,7 @@ export type ISkill = {
   name: string;
   level: number;
   category?: string;
+  position?: number;
   createdAt: string;
   updatedAt: string;
   __v: number;

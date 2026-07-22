@@ -1,15 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { ColumnDef, SortingState } from "@tanstack/react-table";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/admin/DataTable";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ResourceSheet } from "@/components/admin/ResourceSheet";
 import { ConfirmDelete } from "@/components/admin/ConfirmDelete";
 import { SkillForm } from "@/components/admin/skills/SkillForm";
+import { SortableSkillList } from "@/components/admin/skills/SortableSkillList";
 import {
   useDeleteSkillMutation,
   useGetSkillsQuery,
@@ -17,88 +17,15 @@ import {
 import { ISkill } from "@/types";
 import { getErrorMessage } from "@/lib/get-error-message";
 
-const LIMIT = 10;
+const FETCH_ALL_LIMIT = 200;
 
 export default function SkillsPage() {
-  const [page, setPage] = React.useState(1);
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-
-  const sortBy = sorting[0]?.id;
-  const sortOrder = sorting[0] ? (sorting[0].desc ? "desc" : "asc") : undefined;
-
-  const { data, isLoading, isFetching } = useGetSkillsQuery({
-    page,
-    limit: LIMIT,
-    searchTerm: searchTerm || undefined,
-    sortBy,
-    sortOrder,
-  });
+  const { data, isLoading } = useGetSkillsQuery({ limit: FETCH_ALL_LIMIT });
   const [deleteSkill, { isLoading: isDeleting }] = useDeleteSkillMutation();
 
   const [sheetOpen, setSheetOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<ISkill | null>(null);
   const [deletingId, setDeletingId] = React.useState<string | null>(null);
-
-  const columns = React.useMemo<ColumnDef<ISkill>[]>(
-    () => [
-      {
-        accessorKey: "name",
-        header: "Name",
-        cell: ({ row }) => (
-          <span className="font-medium">{row.original.name}</span>
-        ),
-      },
-      {
-        accessorKey: "level",
-        header: "Level",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary"
-                style={{
-                  width: `${Math.min(100, Math.max(0, row.original.level))}%`,
-                }}
-              />
-            </div>
-            <span className="text-sm text-muted-foreground">
-              {row.original.level}%
-            </span>
-          </div>
-        ),
-      },
-      {
-        id: "actions",
-        header: "",
-        enableSorting: false,
-        cell: ({ row }) => (
-          <div className="flex justify-end gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Edit skill"
-              onClick={() => {
-                setEditing(row.original);
-                setSheetOpen(true);
-              }}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Delete skill"
-              onClick={() => setDeletingId(row.original.id)}
-            >
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
-          </div>
-        ),
-      },
-    ],
-    []
-  );
 
   const handleDelete = async () => {
     if (!deletingId) return;
@@ -117,7 +44,8 @@ export default function SkillsPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Skills</h1>
           <p className="text-sm text-muted-foreground">
-            Manage the skills shown on your portfolio.
+            Drag to reorder — this order drives how skills appear on the
+            landing page.
           </p>
         </div>
         <Button
@@ -131,25 +59,22 @@ export default function SkillsPage() {
         </Button>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={data?.data ?? []}
-        meta={data?.meta}
-        isLoading={isLoading}
-        isFetching={isFetching}
-        searchTerm={searchTerm}
-        onSearchTermChange={(value) => {
-          setSearchTerm(value);
-          setPage(1);
-        }}
-        searchPlaceholder="Search skills..."
-        page={page}
-        onPageChange={setPage}
-        limit={LIMIT}
-        sorting={sorting}
-        onSortingChange={setSorting}
-        emptyMessage="No skills yet. Add your first one."
-      />
+      {isLoading ? (
+        <div className="flex flex-col gap-2">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Skeleton key={index} className="h-[52px] w-full rounded-lg" />
+          ))}
+        </div>
+      ) : (
+        <SortableSkillList
+          skills={data?.data ?? []}
+          onEdit={(skill) => {
+            setEditing(skill);
+            setSheetOpen(true);
+          }}
+          onDelete={(id) => setDeletingId(id)}
+        />
+      )}
 
       <ResourceSheet
         open={sheetOpen}
