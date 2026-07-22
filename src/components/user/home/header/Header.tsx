@@ -56,9 +56,16 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
     ? splitOnHighlight(heroTagline, ownerData?.heroHighlight)
     : null;
 
-  const topSkills = [...(skills || [])]
-    .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0))
-    .slice(0, 6);
+  const skillById = new Map(
+    (skills || []).map((skill) => [skill._id || skill.id, skill])
+  );
+  const heroSkills = ownerData?.heroSkills?.length
+    ? (ownerData.heroSkills
+        .map((id) => skillById.get(id))
+        .filter(Boolean) as ISkill[])
+    : [...(skills || [])]
+        .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0))
+        .slice(0, 6);
 
   return (
     <header className="relative overflow-hidden border-b border-border bg-background">
@@ -108,9 +115,9 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
           </p>
         )}
 
-        {topSkills.length > 0 && (
+        {heroSkills.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-2">
-            {topSkills.map((skill) => (
+            {heroSkills.map((skill) => (
               <Badge
                 key={skill._id}
                 variant="outline"

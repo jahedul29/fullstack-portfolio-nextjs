@@ -79,7 +79,8 @@ const Home = async () => {
   const { data: skills, isLoading: isSkillLoading } = await getData(
     "/skills",
     undefined,
-    [dataFetchingTags.skills]
+    [dataFetchingTags.skills],
+    { limit: 200 }
   );
   const { data: blogs, isLoading: isBlogsLoading } = await getData(
     "/blogs",

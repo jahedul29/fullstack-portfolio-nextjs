@@ -18,4 +18,5 @@ export type IOwner = {
   aboutOwner: string;
   metaKeywords?: string[];
   sections?: { key: string; visible: boolean }[];
+  heroSkills?: string[];
 };

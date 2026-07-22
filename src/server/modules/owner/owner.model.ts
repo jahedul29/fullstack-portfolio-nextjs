@@ -81,6 +81,10 @@ const ownerSchema = new Schema<IOwner>(
         _id: false,
       },
     ],
+    heroSkills: {
+      type: [String],
+      default: undefined,
+    },
   },
   {
     timestamps: true,

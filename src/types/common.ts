@@ -114,6 +114,7 @@ export type IOwner = {
   metaKeywords?: string[];
   id: string;
   sections?: { key: string; visible: boolean }[];
+  heroSkills?: string[];
 };
 
 export type IContribution = {

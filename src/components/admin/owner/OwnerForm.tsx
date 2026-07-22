@@ -33,6 +33,7 @@ import { getErrorMessage } from "@/lib/get-error-message";
 import { normalizeSections } from "@/lib/sections";
 import { SECTION_LABELS } from "@/server/modules/owner/owner.constant";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { SkillMultiSelect } from "@/components/admin/SkillMultiSelect";
 
 const ownerFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -61,6 +62,7 @@ const ownerFormSchema = z.object({
   calanderlyUrl: z.string().optional(),
   address: z.string().min(1, "Address is required"),
   metaKeywords: z.string().optional(),
+  heroSkills: z.array(z.string()).optional(),
   sections: z.array(
     z.object({
       key: z.string(),
@@ -99,6 +101,7 @@ export function OwnerForm({ owner }: OwnerFormProps) {
       calanderlyUrl: owner.calanderlyUrl ?? "",
       address: owner.address ?? "",
       metaKeywords: owner.metaKeywords?.join(", ") ?? "",
+      heroSkills: owner.heroSkills ?? [],
       sections: normalizeSections(owner.sections),
     },
   });
@@ -118,6 +121,7 @@ export function OwnerForm({ owner }: OwnerFormProps) {
         summery: values.summery || undefined,
         heroTagline: values.heroTagline || undefined,
         heroHighlight: values.heroHighlight || undefined,
+        heroSkills: values.heroSkills ?? [],
         metaKeywords: values.metaKeywords
           ? values.metaKeywords
               .split(",")
@@ -442,6 +446,27 @@ export function OwnerForm({ owner }: OwnerFormProps) {
               </FormDescription>
               <FormControl>
                 <Input placeholder="full stack, react, node" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="heroSkills"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Hero skills</FormLabel>
+              <FormDescription>
+                Skills shown in the hero. Leave empty to auto-show your top
+                skills.
+              </FormDescription>
+              <FormControl>
+                <SkillMultiSelect
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

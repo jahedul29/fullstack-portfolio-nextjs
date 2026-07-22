@@ -52,6 +52,7 @@ const create = z.object({
         })
       )
       .optional(),
+    heroSkills: z.array(z.string()).optional(),
   }),
 });
 
@@ -86,6 +87,7 @@ const update = z.object({
         })
       )
       .optional(),
+    heroSkills: z.array(z.string()).optional(),
   }),
 });
 
