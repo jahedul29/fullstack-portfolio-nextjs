@@ -60,25 +60,19 @@ const Home = async () => {
     return <EmptyState />;
   }
 
-  const { data: projects, isLoading: isProjectDataLoading } = await getData(
-    "/projects",
-    undefined,
-    [dataFetchingTags.projects],
-    {
-      page: 1,
-      limit: 3,
-      isFeatured: true,
-      sortBy: "priorityScore",
-      sortOrder: "desc",
-    }
-  );
-  const { data: personalProjects, isLoading: isPersonalProjectDataLoading } =
+  const { data: featuredProjects, isLoading: isProjectDataLoading } =
     await getData("/projects", undefined, [dataFetchingTags.projects], {
-      type: "personal",
-      limit: 6,
+      isFeatured: true,
+      limit: 50,
       sortBy: "priorityScore",
       sortOrder: "desc",
     });
+  const projects = (featuredProjects || [])
+    .filter((project: any) => project.type !== "personal")
+    .slice(0, 3);
+  const personalProjects = (featuredProjects || [])
+    .filter((project: any) => project.type === "personal")
+    .slice(0, 3);
   const { data: skills, isLoading: isSkillLoading } = await getData(
     "/skills",
     undefined,

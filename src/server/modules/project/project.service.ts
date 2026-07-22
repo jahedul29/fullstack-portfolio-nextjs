@@ -7,7 +7,46 @@ import { projectSearchableFields } from "./project.constant";
 import { IProject, IProjectFilters } from "./project.interface";
 import { Project } from "./project.model";
 
+const MAX_FEATURED_PER_BUCKET = 3;
+
+const getBucket = (type?: string): "personal" | "professional" =>
+  type === "personal" ? "personal" : "professional";
+
+const countFeaturedInBucket = async (
+  bucket: "personal" | "professional",
+  excludeId?: string
+): Promise<number> => {
+  const bucketCondition =
+    bucket === "personal"
+      ? { type: "personal" }
+      : { type: { $ne: "personal" } };
+
+  return Project.countDocuments({
+    isFeatured: true,
+    ...bucketCondition,
+    ...(excludeId ? { _id: { $ne: excludeId } } : {}),
+  });
+};
+
+const assertFeaturedCap = async (
+  bucket: "personal" | "professional",
+  excludeId?: string
+): Promise<void> => {
+  const count = await countFeaturedInBucket(bucket, excludeId);
+  if (count >= MAX_FEATURED_PER_BUCKET) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      `You can feature at most 3 ${bucket === "personal" ? "side" : "professional"} projects.`
+    );
+  }
+};
+
 const create = async (project: IProject): Promise<IProject | null> => {
+  if (project.isFeatured) {
+    const bucket = getBucket(project.type);
+    await assertFeaturedCap(bucket);
+  }
+
   const savedProject = (await Project.create(project)).toObject();
   return savedProject;
 };
@@ -20,6 +59,14 @@ const update = async (
 
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, "Project not found");
+  }
+
+  const resultingIsFeatured = project.isFeatured ?? isExist.isFeatured;
+  const resultingType = project.type ?? isExist.type;
+
+  if (resultingIsFeatured) {
+    const bucket = getBucket(resultingType);
+    await assertFeaturedCap(bucket, id);
   }
 
   const updatedProjectData: Partial<IProject> = { ...project };
