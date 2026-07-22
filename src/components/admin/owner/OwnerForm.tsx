@@ -43,6 +43,14 @@ const ownerFormSchema = z.object({
   phoneNumber: z.string().min(1, "Phone number is required"),
   designation: z.string().min(1, "Designation is required"),
   summery: z.string().optional(),
+  heroTagline: z.string().optional(),
+  heroHighlight: z.string().optional(),
+  yearsOfExperience: z.preprocess(
+    (val) => (val === "" || val === undefined ? undefined : Number(val)),
+    z
+      .number({ invalid_type_error: "Years of experience must be a number" })
+      .optional()
+  ),
   aboutOwner: z.string().min(1, "About is required"),
   photoUrl: z.string().min(1, "Photo URL is required"),
   linkedInUrl: z.string().min(1, "LinkedIn URL is required"),
@@ -78,6 +86,9 @@ export function OwnerForm({ owner }: OwnerFormProps) {
       phoneNumber: owner.phoneNumber ?? "",
       designation: owner.designation ?? "",
       summery: owner.summery ?? "",
+      heroTagline: owner.heroTagline ?? "",
+      heroHighlight: owner.heroHighlight ?? "",
+      yearsOfExperience: owner.yearsOfExperience,
       aboutOwner: owner.aboutOwner ?? "",
       photoUrl: owner.photoUrl ?? "",
       linkedInUrl: owner.linkedInUrl ?? "",
@@ -105,6 +116,8 @@ export function OwnerForm({ owner }: OwnerFormProps) {
         stackOverflowUrl: values.stackOverflowUrl || undefined,
         calanderlyUrl: values.calanderlyUrl || undefined,
         summery: values.summery || undefined,
+        heroTagline: values.heroTagline || undefined,
+        heroHighlight: values.heroHighlight || undefined,
         metaKeywords: values.metaKeywords
           ? values.metaKeywords
               .split(",")
@@ -181,6 +194,32 @@ export function OwnerForm({ owner }: OwnerFormProps) {
 
           <FormField
             control={form.control}
+            name="yearsOfExperience"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Years of experience{" "}
+                  <span className="text-muted-foreground">(optional)</span>
+                </FormLabel>
+                <FormDescription>
+                  Shown next to the designation in the hero eyebrow, e.g.
+                  &quot;Senior Software Engineer · 5+ years&quot;.
+                </FormDescription>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="address"
             render={({ field }) => (
               <FormItem>
@@ -214,11 +253,58 @@ export function OwnerForm({ owner }: OwnerFormProps) {
 
         <FormField
           control={form.control}
+          name="heroTagline"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Hero tagline{" "}
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
+              <FormDescription>
+                The role line shown under the name. Falls back to &quot;I
+                work as a {"{designation}"}.&quot; when left empty.
+              </FormDescription>
+              <FormControl>
+                <Textarea
+                  rows={2}
+                  placeholder="e.g. I build and scale fullstack products — from API design to production UI."
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="heroHighlight"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Highlight phrase{" "}
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
+              <FormDescription>
+                Part of the tagline shown in the accent color, e.g.
+                &quot;fullstack products&quot;. Must match text in the
+                tagline exactly to take effect.
+              </FormDescription>
+              <FormControl>
+                <Input placeholder="e.g. fullstack products" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="summery"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Short pitch{" "}
+                Hero pitch{" "}
                 <span className="text-muted-foreground">(optional)</span>
               </FormLabel>
               <FormDescription>

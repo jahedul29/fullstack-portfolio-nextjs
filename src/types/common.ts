@@ -101,6 +101,9 @@ export type IOwner = {
   photoUrl: string;
   designation: string;
   summery?: string;
+  yearsOfExperience?: number;
+  heroTagline?: string;
+  heroHighlight?: string;
   aboutOwner: string;
   createdAt: string;
   updatedAt: string;

@@ -37,6 +37,9 @@ const create = z.object({
       required_error: "designation is required",
     }),
     summery: z.string().optional(),
+    yearsOfExperience: z.number().optional(),
+    heroTagline: z.string().optional(),
+    heroHighlight: z.string().optional(),
     aboutOwner: z.string({
       required_error: "aboutOwner is required",
     }),
@@ -70,6 +73,9 @@ const update = z.object({
     photoUrl: z.string().optional(),
     designation: z.string().optional(),
     summery: z.string().optional(),
+    yearsOfExperience: z.number().optional(),
+    heroTagline: z.string().optional(),
+    heroHighlight: z.string().optional(),
     aboutOwner: z.string().optional(),
     metaKeywords: z.array(z.string()).optional(),
     sections: z

@@ -58,6 +58,15 @@ const ownerSchema = new Schema<IOwner>(
     summery: {
       type: String,
     },
+    yearsOfExperience: {
+      type: Number,
+    },
+    heroTagline: {
+      type: String,
+    },
+    heroHighlight: {
+      type: String,
+    },
     aboutOwner: {
       type: String,
       required: true,

@@ -19,10 +19,42 @@ const scrollToSection = (id: string) => {
   });
 };
 
+const splitOnHighlight = (text: string, highlight?: string) => {
+  const trimmedHighlight = highlight?.trim();
+  if (!trimmedHighlight) {
+    return null;
+  }
+
+  const index = text.indexOf(trimmedHighlight);
+  if (index === -1) {
+    return null;
+  }
+
+  return {
+    before: text.slice(0, index),
+    highlight: text.slice(index, index + trimmedHighlight.length),
+    after: text.slice(index + trimmedHighlight.length),
+  };
+};
+
 const Header = ({ ownerData, skills }: HeaderProps) => {
   const pitch =
     ownerData?.summery?.trim() ||
     ownerData?.aboutOwner?.split("\n")[0]?.trim();
+
+  const eyebrow = [
+    ownerData?.designation,
+    ownerData?.yearsOfExperience
+      ? `${ownerData.yearsOfExperience}+ years`
+      : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  const heroTagline = ownerData?.heroTagline?.trim();
+  const taglineHighlight = heroTagline
+    ? splitOnHighlight(heroTagline, ownerData?.heroHighlight)
+    : null;
 
   const topSkills = [...(skills || [])]
     .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0))
@@ -52,9 +84,9 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
       />
 
       <div className="container relative mx-auto max-w-6xl px-5 py-24 sm:px-10 md:py-32">
-        {ownerData?.designation && (
+        {eyebrow && (
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-brand">
-            {ownerData.designation}
+            {eyebrow}
           </p>
         )}
 
@@ -62,10 +94,24 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
           {ownerData?.name}
         </h1>
 
-        {ownerData?.designation && (
+        {heroTagline ? (
           <p className="mt-3 text-lg font-semibold text-foreground md:text-xl">
-            I work as a <span className="text-brand">{ownerData.designation}</span>.
+            {taglineHighlight ? (
+              <>
+                {taglineHighlight.before}
+                <span className="text-brand">{taglineHighlight.highlight}</span>
+                {taglineHighlight.after}
+              </>
+            ) : (
+              heroTagline
+            )}
           </p>
+        ) : (
+          ownerData?.designation && (
+            <p className="mt-3 text-lg font-semibold text-foreground md:text-xl">
+              I work as a <span className="text-brand">{ownerData.designation}</span>.
+            </p>
+          )
         )}
 
         {pitch && (
