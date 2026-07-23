@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectDb } from "@/server/db";
 import { handler } from "@/server/lib/handler";
 import { sendResponse } from "@/server/lib/sendResponse";
@@ -9,6 +10,7 @@ import { ContributionService } from "@/server/modules/contribution/contribution.
 import { contributionFilterableFields } from "@/server/modules/contribution/contribution.constant";
 import { ContributionValidationSchema } from "@/server/modules/contribution/contribution.validation";
 import "@/server/modules/skill/skill.model";
+import dataFetchingTags from "@/constants/dataFetchingTags";
 
 const PAGINATION_KEYS = ["page", "limit", "sortBy", "sortOrder"];
 
@@ -36,6 +38,9 @@ export const POST = handler(async (req: NextRequest) => {
   ContributionValidationSchema.create.parse({ body });
 
   const data = await ContributionService.create(body);
+
+  revalidateTag(dataFetchingTags.contributions);
+
   return sendResponse({
     statusCode: 201,
     message: "Contribution created successfully",

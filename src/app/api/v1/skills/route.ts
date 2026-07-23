@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectDb } from "@/server/db";
 import { handler } from "@/server/lib/handler";
 import { sendResponse } from "@/server/lib/sendResponse";
@@ -8,6 +9,7 @@ import { USER_ROLE } from "@/server/modules/user/user.constant";
 import { SkillService } from "@/server/modules/skill/skill.service";
 import { skillFilterableFields } from "@/server/modules/skill/skill.constant";
 import { SkillValidationSchema } from "@/server/modules/skill/skill.validation";
+import dataFetchingTags from "@/constants/dataFetchingTags";
 
 const PAGINATION_KEYS = ["page", "limit", "sortBy", "sortOrder"];
 
@@ -35,6 +37,12 @@ export const POST = handler(async (req: NextRequest) => {
   SkillValidationSchema.create.parse({ body });
 
   const data = await SkillService.create(body);
+
+  revalidateTag(dataFetchingTags.skills);
+  revalidateTag(dataFetchingTags.projects);
+  revalidateTag(dataFetchingTags.experiences);
+  revalidateTag(dataFetchingTags.contributions);
+
   return sendResponse({
     statusCode: 201,
     message: "Skill created successfully",

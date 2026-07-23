@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectDb } from "@/server/db";
 import { handler } from "@/server/lib/handler";
 import { sendResponse } from "@/server/lib/sendResponse";
@@ -6,6 +7,7 @@ import { authGuard } from "@/server/lib/authGuard";
 import { USER_ROLE } from "@/server/modules/user/user.constant";
 import { BlogService } from "@/server/modules/blog/blog.service";
 import { BlogValidationSchema } from "@/server/modules/blog/blog.validation";
+import dataFetchingTags from "@/constants/dataFetchingTags";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +32,9 @@ export const PATCH = handler(
     BlogValidationSchema.update.parse({ body });
 
     const data = await BlogService.update(body, ctx.params.id);
+
+    revalidateTag(dataFetchingTags.blogs);
+
     return sendResponse({
       statusCode: 200,
       message: "Blog updated successfully",
@@ -44,6 +49,9 @@ export const DELETE = handler(
     await authGuard(req, [USER_ROLE.ADMIN, USER_ROLE.MANAGER]);
 
     const data = await BlogService.deleteOne(ctx.params.id);
+
+    revalidateTag(dataFetchingTags.blogs);
+
     return sendResponse({
       statusCode: 200,
       message: "Blog deleted successfully",

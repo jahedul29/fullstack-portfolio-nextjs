@@ -43,8 +43,10 @@ const findAll = async (
     calculatePagination(paginationParams);
 
   const sortCondition: { [key: string]: SortOrder } = {};
-  if (sortBy && sortBy) {
+  if (paginationParams.sortBy) {
     sortCondition[sortBy] = sortOrder;
+  } else {
+    sortCondition.startTime = "desc";
   }
 
   const { searchTerm, ...filterData } = filters;

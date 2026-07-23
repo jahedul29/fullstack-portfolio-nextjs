@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectDb } from "@/server/db";
 import { handler } from "@/server/lib/handler";
 import { sendResponse } from "@/server/lib/sendResponse";
@@ -8,6 +9,7 @@ import { USER_ROLE } from "@/server/modules/user/user.constant";
 import { BlogService } from "@/server/modules/blog/blog.service";
 import { blogFilterableFields } from "@/server/modules/blog/blog.constant";
 import { BlogValidationSchema } from "@/server/modules/blog/blog.validation";
+import dataFetchingTags from "@/constants/dataFetchingTags";
 
 const PAGINATION_KEYS = ["page", "limit", "sortBy", "sortOrder"];
 
@@ -35,6 +37,9 @@ export const POST = handler(async (req: NextRequest) => {
   BlogValidationSchema.create.parse({ body });
 
   const data = await BlogService.create(body);
+
+  revalidateTag(dataFetchingTags.blogs);
+
   return sendResponse({
     statusCode: 201,
     message: "Blog created successfully",
