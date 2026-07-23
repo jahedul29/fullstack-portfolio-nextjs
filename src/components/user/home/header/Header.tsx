@@ -59,13 +59,16 @@ const Header = ({ ownerData, skills }: HeaderProps) => {
   const skillById = new Map(
     (skills || []).map((skill) => [skill._id || skill.id, skill])
   );
+  const sortByPosition = (list: ISkill[]) =>
+    [...list].sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0));
+
   const heroSkills = ownerData?.heroSkills?.length
-    ? (ownerData.heroSkills
-        .map((id) => skillById.get(id))
-        .filter(Boolean) as ISkill[])
-    : [...(skills || [])]
-        .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0))
-        .slice(0, 6);
+    ? sortByPosition(
+        ownerData.heroSkills
+          .map((id) => skillById.get(id))
+          .filter(Boolean) as ISkill[]
+      )
+    : sortByPosition(skills || []).slice(0, 6);
 
   return (
     <header className="relative overflow-hidden border-b border-border bg-background">
